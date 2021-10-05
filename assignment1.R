@@ -15,4 +15,4 @@ library(rsq)
 ourdata <- read.csv("https://raw.githubusercontent.com/bri-ne/MUSA500_Assignment_1/main/RegressionData.csv")
 
 #test for code collaboration 
-
+#second test
