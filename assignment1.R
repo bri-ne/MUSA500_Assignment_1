@@ -5,7 +5,7 @@ install.packages("MASS")
 install.packages("rsq")
 install.packages("gridExtra")
 install.packages("cowplot")
-install.packages('BAMMtools')
+install.packages("classInt")
 
 library(tidyr)
 library(dplyr)
@@ -16,9 +16,8 @@ library(rsq)
 library(kableExtra)
 library(tidyverse) #for ggplot
 library(sf) #for maps
-library(rgdal) #for downloading shape file from web
 library(cowplot) #for plotgrid
-library(BAMMtools) #for jenks breaks
+library(classInt)#for jenks breaks
 
 
 #---- Step 1: Upload Data ----
@@ -176,10 +175,153 @@ pcorr
 
 ourdata_geom <- st_read("https://raw.githubusercontent.com/bri-ne/MUSA500_Assignment_1/main/RegressionData.geojson")
 
-#getting Jenks Breaks for LNMEDHVAL
-ourdata_geom$LNMEDVHAL_Jenks <- getJenksBreaks(ourdata_geom$LNMEDVHAL, 5, subset = NULL)
-chloro
-ggplot()+
-  geom_sf(data= ourdata_geom, aes(fill = LNMEDVHAL_Jenks), color = NA)
+
+#getting Jenks Breaks for LNMEDHVAL 
+classes <- classIntervals(ourdata_geom$LNMEDHVAL, n = 5, style = "jenks")
+classes$brks
+
+#we'll create a new column in our sf object using the base R cut() function to cut up our percent variable into distinct groups.
+
+ourdata_geom <- ourdata_geom %>%
+  mutate(LNMEDVHAL_class = cut(LNMEDHVAL, classes$brks, include.lowest = T))
 
 
+#mapping
+choro_LNMEDHVAL <- ggplot() +
+  geom_sf(data = ourdata_geom,
+          aes(fill = LNMEDVHAL_class),
+          alpha = 1,
+          colour = "gray80",
+          size = 0.15) +
+  scale_fill_brewer(palette = "PuBu",
+                    name = "LN Median House Value") +
+  labs(x = NULL, y = NULL,
+       title = "LN Median House Value in Philadelphia by Block Group",
+       subtitle = "Source: U.S. Census") +
+  theme(line = element_blank(),
+        axis.text = element_blank(),
+        axis.title = element_blank(),
+        panel.background = element_blank())
+
+#making remaining JENKS for maps --------------------
+
+#PctVacant Jenks
+PVclasses <- classIntervals(ourdata_geom$PCTVACANT, n = 5, style = "jenks")
+
+PVclasses$brks
+
+ourdata_geom <- ourdata_geom %>%
+  mutate(PCTVACANT_class = cut(PCTVACANT, PVclasses$brks, include.lowest = T))
+
+#PctSingle Jenks
+PSclasses <- classIntervals(ourdata_geom$PCTSINGLES, n = 5, style = "jenks")
+
+PSclasses$brks
+
+ourdata_geom <- ourdata_geom %>%
+  mutate(PCTSINGLES_class = cut(PCTSINGLES, PSclasses$brks, include.lowest = T))
+
+#PctBach Jenks
+PBclasses <- classIntervals(ourdata_geom$PCTBACHMOR, n = 5, style = "jenks")
+
+PBclasses$brks
+
+ourdata_geom <- ourdata_geom %>%
+  mutate(PCTBACHMOR_class = cut(PCTBACHMOR, PBclasses$brks, include.lowest = T))
+
+#LNBelPov Jenks
+BPclasses <- classIntervals(ourdata_geom$LNNBELPOV, n = 3, style = "jenks")
+
+BPclasses$brks
+ourdata_geom <- ourdata_geom %>%
+  mutate(LNNBELPOV_class = cut(LNNBELPOV, BPclasses$brks, include.lowest = T))
+
+
+#mapping the rest --------------------------------------
+
+#PctVacant Map
+
+choro_PctVac <- ggplot() +
+  geom_sf(data = ourdata_geom,
+          aes(fill = PCTVACANT_class),
+          alpha = 1,
+          colour = "gray80",
+          size = 0.15) +
+  scale_fill_brewer(palette = "PuBu",
+                    name = "Percent Houses Vacant") +
+  labs(x = NULL, y = NULL,
+       title = "Perecentage of Vacant Houses\n in Philadelphia by Block Group",
+       subtitle = "Source: U.S. Census") +
+  theme(line = element_blank(),
+        axis.text = element_blank(),
+        axis.title = element_blank(),
+        panel.background = element_blank())
+
+
+
+#PctSing Map
+choro_PctSing <- ggplot() +
+  geom_sf(data = ourdata_geom,
+          aes(fill = PCTSINGLES_class),
+          alpha = 1,
+          colour = "gray80",
+          size = 0.15) +
+  scale_fill_brewer(palette = "PuBu",
+                    name = "Percent Single House Units") +
+  labs(x = NULL, y = NULL,
+       title = "Perecentage of Single House Units\n in Philadelphia by Block Group",
+       subtitle = "Source: U.S. Census") +
+  theme(line = element_blank(),
+        axis.text = element_blank(),
+        axis.title = element_blank(),
+        panel.background = element_blank())
+
+
+#PctBach Map
+choro_PctBach <- ggplot() +
+  geom_sf(data = ourdata_geom,
+          aes(fill = PCTBACHMOR_class),
+          alpha = 1,
+          colour = "gray80",
+          size = 0.15) +
+  scale_fill_brewer(palette = "PuBu",
+                    name = "Percent Bachelors Degree") +
+  labs(x = NULL, y = NULL,
+       title = "Percentage of Individuals with a Bachelors Degree or Higher\n in Philadelphia by Block Group",
+       subtitle = "Source: U.S. Census") +
+  theme(line = element_blank(),
+        axis.text = element_blank(),
+        axis.title = element_blank(),
+        panel.background = element_blank())
+
+#LNBelPov Map
+choro_LNBelPov <- ggplot() +
+  geom_sf(data = ourdata_geom,
+          aes(fill = LNNBELPOV_class),
+          alpha = 1,
+          colour = "gray80",
+          size = 0.15) +
+  scale_fill_brewer(palette = "PuBu",
+                    name = "LN Percent Households in Poverty") +
+  labs(x = NULL, y = NULL,
+       title = "LN Percentage of Households Living in Poverty\n in Philadelphia by Block Group",
+       subtitle = "Source: U.S. Census") +
+  theme(line = element_blank(),
+        axis.text = element_blank(),
+        axis.title = element_blank(),
+        panel.background = element_blank())
+
+
+#************choropleths for markdown ************************
+#--- Unfortunately I had to do three breaks b/c the values for the LN %BELPOV were not varied enough
+choro_LNMEDHVAL
+choro_PctVac 
+choro_PctSing 
+choro_PctBach 
+choro_LNBelPov
+
+mapgrid <- plot_grid( choro_PctVac, 
+                      choro_PctSing, 
+                      choro_PctBach, 
+                      choro_LNBelPov,
+                          ncol = 2, nrow = 2)
