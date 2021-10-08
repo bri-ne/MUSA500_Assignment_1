@@ -381,5 +381,6 @@ ResidualPlot<- ggplot(ourdata, aes(x = predvals, y= stdres))+
 
 step <- stepAIC(fit, direction="both")
 
+
 # Save output of step$anova for markdown!
 step$anova
