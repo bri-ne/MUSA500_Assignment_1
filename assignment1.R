@@ -19,6 +19,7 @@ library(sf) #for maps
 library(cowplot) #for plotgrid
 library(classInt)#for jenks breaks
 
+options(scipen=999)
 
 #---- Step 1: Upload Data ----
 
@@ -36,7 +37,7 @@ summary <-as.data.frame(apply(ourdata,2,summary))
 base::row(summary,1)
 #dropping all rows except the mean
 summary<-summary[-c(1,2,3,5,6),]
-#transposing so varibles (mean and sd) are columns
+#transposing so variables (mean and sd) are columns
 summary <- summary%>%t()%>%as.data.frame()
 
 #getting sd and adding sd column
@@ -143,7 +144,8 @@ pSing <- ggplot(ourdata, aes(x = LNMEDHVAL, y= PCTSINGLES))+
 
 
 
-scattergrid <- plot_grid( pBelpov, 
+scattergrid <- plot_grid( 
+           pBelpov, 
            pBach, 
            pVac, 
            pSing, 
@@ -325,3 +327,59 @@ mapgrid <- plot_grid( choro_PctVac,
                       choro_PctBach, 
                       choro_LNBelPov,
                           ncol = 2, nrow = 2)
+
+#---- Step 3 : Regression Analysis -------
+
+#Run regression model
+fit <- lm(MEDHVAL ~ LNBELPOV100 + PCTBACHMOR + PCTVACANT + PCTSINGLES, data=ourdata)
+
+#3A
+summary(fit)
+
+#Summary of Regression
+#all predictors are significant - p value < 0.05
+#R squared - 55.38% = % of variance in median house value explained 
+    #by predictors 
+#Adjusted R Squared - 55.28% = % of variance in median house value explained
+    #BY predictors adjusted for the number of predictors
+#P value associated with F-ratio of 532 is less than 0.0001 -
+    #We can reject the H0 that all Beta coefficients for the predictors are 0
+
+#3B
+anova(fit)
+
+#ANOVA table containing SSE and SSR
+#SSR = SS(LNBELPOV100) + SS(PCTBACHMOR) +SS(PCTVACANTS) + SS(PCTSINGLES) = 
+    # 869866100108 + 2345334804156 +  58030777316 + 154801231763 = 3428032913343
+    # Amount of total variance in Median House value explained by model
+#SSE = 2761620505240 = amount of total variance in median house value that is 
+    # unexplained by the model
+
+#3C
+#new column saving predicted values 
+ourdata$predvals <- fitted(fit)
+
+#new column saving residuals
+ourdata$resids <- residuals(fit)
+
+#New column saving standardized residuals
+ourdata$stdres <- rstandard(fit)
+
+#3D Create a scatterplot with standardized residuals on Y axis and
+    # Predicted Values on x axis. 
+
+ResidualPlot<- ggplot(ourdata, aes(x = predvals, y= stdres))+
+                  geom_point(size=1.5, color = 'darkslateblue', alpha = .5)+
+                  geom_hline(yintercept=0, size = .5)+
+                  labs(x = 'Predicted Median House Value ($)', 
+                       y = 'Standardized Residuals')
+
+#----Step 4 ----
+#use step and step$anova commands in the MASS library to run stepwise
+#regression and determine the best model based on the Akaike Information
+#Criterion. Save the step$anova output
+
+step <- stepAIC(fit, direction="both")
+
+# Save output of step$anova for markdown!
+step$anova
