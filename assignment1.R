@@ -18,6 +18,8 @@ library(tidyverse) #for ggplot
 library(sf) #for maps
 library(cowplot) #for plotgrid
 library(classInt)#for jenks breaks
+library(rgdal)
+library(ggplot2)
 
 options(scipen=999)
 
@@ -385,7 +387,6 @@ step <- stepAIC(fit, direction="both")
 # Save output of step$anova for markdown!
 step$anova
 
-
 #----Step 5 ----
 
 #CROSS-VALIDATION
@@ -398,31 +399,25 @@ anova(fit)
 #Predicted (Predicted values using all observations) 
 #cvpred (cross-validation predictions)
 #CV residual = y (in this case, MEDHHINC) - cvpred
-cv <- CVlm(data=ourdata, fit, m=5)				        #m=5 sets it to 5 folds
+cv <- CVlm(data=ourdata, fit, m=5)				       
 #Extracting MSEs
 mse <- attr(cv, "ms")
 mse
-rmse <- sqrt(mse)						  #Obtaining RMSE for model 1
+rmse <- sqrt(mse)						 
 rmse
 
 #Model 2
 fit <- lm(MEDHHINC ~ PCTVACANT + MEDHVAL + PCTSINGLES, data=ourdata)
 summary(fit)
 anova(fit)
-cv <- CVlm(data=datadata, fit, m=5)				        #m=5 sets it to 5 folds
+cv <- CVlm(data=datadata, fit, m=5)				        
 summary(cv)
 #Extracting MSEs
 mse <- attr(cv, "ms")
 mse
-rmse <- sqrt(mse)					                      #Obtaining RMSE for model 2
+rmse <- sqrt(mse)					                    
 rmse
 
-#STEPWISE REGRESSION
-fit <- lm(MEDHVAL~ PCTBACHMOR + PCTVACANT + MEDHHINC + PCTSINGLES,data=ourdata)
-step <- stepAIC(fit, direction="both")
-# display results
-step$anova
-
-
+#----Step 6 ----
 
 
