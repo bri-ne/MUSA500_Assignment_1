@@ -417,6 +417,12 @@ mse
 rmse <- sqrt(mse)					                      #Obtaining RMSE for model 2
 rmse
 
+#STEPWISE REGRESSION
+fit <- lm(MEDHVAL~ PCTBACHMOR + PCTVACANT + MEDHHINC + PCTSINGLES,data=ourdata)
+step <- stepAIC(fit, direction="both")
+# display results
+step$anova
+
 
 
 
