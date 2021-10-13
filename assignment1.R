@@ -387,6 +387,7 @@ step <- stepAIC(fit, direction="both")
 # Save output of step$anova for markdown!
 step$anova
 
+
 #----Step 5 ----
 
 #CROSS-VALIDATION
@@ -419,5 +420,9 @@ rmse <- sqrt(mse)
 rmse
 
 #----Step 6 ----
+
+
+=======
+
 
 
