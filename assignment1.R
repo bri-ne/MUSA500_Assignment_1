@@ -333,7 +333,7 @@ mapgrid <- plot_grid( choro_PctVac,
 #---- Step 3 : Regression Analysis -------
 
 #Run regression model
-fit <- lm(MEDHVAL ~ LNBELPOV100 + PCTBACHMOR + PCTVACANT + PCTSINGLES, data=ourdata)
+fit <- lm(LNMEDHVAL ~ LNBELPOV100 + PCTBACHMOR + PCTVACANT + PCTSINGLES, data=ourdata)
 
 #3A
 summary(fit)
