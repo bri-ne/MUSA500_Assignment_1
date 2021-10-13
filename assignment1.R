@@ -333,7 +333,8 @@ mapgrid <- plot_grid( choro_PctVac,
 #---- Step 3 : Regression Analysis -------
 
 #Run regression model
-fit <- lm(MEDHVAL ~ LNBELPOV100 + PCTBACHMOR + PCTVACANT + PCTSINGLES, data=ourdata)
+#fit <- lm(MEDHVAL ~ LNBELPOV100 + PCTBACHMOR + PCTVACANT + PCTSINGLES, data=ourdata)
+fit <- lm(LNMEDHVAL ~ LNBELPOV100 + PCTBACHMOR + PCTVACANT + PCTSINGLES, data=ourdata)
 
 #3A
 summary(fit)
@@ -387,15 +388,8 @@ step <- stepAIC(fit, direction="both")
 # Save output of step$anova for markdown!
 step$anova
 
-
 #----Step 5 ----
 
-#CROSS-VALIDATION
-#Model 1
-fit <- lm(MEDHHINC ~ PCTVACANT + PCTSINGLES, data=ourdata)
-summary(fit)
-anova(fit)
-                         
 #In the output: 
 #Predicted (Predicted values using all observations) 
 #cvpred (cross-validation predictions)
@@ -407,22 +401,71 @@ mse
 rmse <- sqrt(mse)						 
 rmse
 
+#CROSS-VALIDATION
 #Model 2
-fit <- lm(MEDHHINC ~ PCTVACANT + MEDHVAL + PCTSINGLES, data=ourdata)
-summary(fit)
-anova(fit)
-cv <- CVlm(data=datadata, fit, m=5)				        
-summary(cv)
+fit2 <- lm(LNMEDHVAL ~ MEDHHINC + PCTVACANT , data=ourdata)
+summary(fit2)
+anova(fit2)
+
+#Model
+#fit <- lm(MEDHHINC ~ PCTVACANT + MEDHVAL + PCTSINGLES, data=ourdata)
+#summary(fit)
+#anova(fit)
+#cv <- CVlm(data=datadata, fit, m=5)				        
+#summary(cv)
 #Extracting MSEs
+
 mse <- attr(cv, "ms")
 mse
 rmse <- sqrt(mse)					                    
 rmse
 
 #----Step 6 ----
+#new column saving predicted values 
+ourdata$predvals2 <- fitted(fit2)
 
+#new column saving residuals
+ourdata$resids2 <- residuals(fit2)
 
-=======
+#New column saving standardized residuals
+ourdata$stdres2 <- rstandard(fit2)
+
+#3D Create a scatterplot with standardized residuals on Y axis and
+# Predicted Values on x axis. 
+
+ResidualPlot2<- ggplot(ourdata, aes(x = predvals2, y= stdres2))+
+  geom_point(size=1.5, color = 'darkslateblue', alpha = .5)+
+  geom_hline(yintercept=0, size = .5)+
+  labs(x = 'Predicted Median House Value ($)', 
+       y = 'Standardized Residuals')
+
+#getting Jenks Breaks for LNMEDHVAL 
+standres2classes <- classIntervals(ourdata_geom$stdres2, n = 5, style = "jenks")
+standres2classes$brks
+typeof(ourdata_geom$stdres2)
+
+#we'll create a new column in our sf object using the base R cut() function to cut up our percent variable into distinct groups.
+
+ourdata_geom <- ourdata_geom %>%
+  mutate(stdresclass = cut(stdres2, standres2classes$brks, include.lowest = T))
+
+#mapping
+choro_stdresclass <- ggplot() +
+  geom_sf(data = ourdata_geom,
+          aes(fill = stdresclass),
+          alpha = 1,
+          colour = "gray80",
+          size = 0.15) +
+  scale_fill_brewer(palette = "PuBu",
+                    name = "LN Median House Value") +
+  labs(x = NULL, y = NULL,
+       title = "LN Median House Value in Philadelphia by Block Group",
+       subtitle = "Source: U.S. Census") +
+  theme(line = element_blank(),
+        axis.text = element_blank(),
+        axis.title = element_blank(),
+        panel.background = element_blank())
+
 
 
 
