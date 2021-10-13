@@ -390,12 +390,6 @@ step$anova
 
 #----Step 5 ----
 
-#CROSS-VALIDATION
-#Model 1
-fit <- lm(MEDHHINC ~ PCTVACANT + PCTSINGLES, data=ourdata)
-summary(fit)
-anova(fit)
-                         
 #In the output: 
 #Predicted (Predicted values using all observations) 
 #cvpred (cross-validation predictions)
@@ -405,18 +399,6 @@ cv <- CVlm(data=ourdata, fit, m=5)
 mse <- attr(cv, "ms")
 mse
 rmse <- sqrt(mse)						 
-rmse
-
-#Model 2
-fit <- lm(MEDHHINC ~ PCTVACANT + MEDHVAL + PCTSINGLES, data=ourdata)
-summary(fit)
-anova(fit)
-cv <- CVlm(data=datadata, fit, m=5)				        
-summary(cv)
-#Extracting MSEs
-mse <- attr(cv, "ms")
-mse
-rmse <- sqrt(mse)					                    
 rmse
 
 #----Step 6 ----
