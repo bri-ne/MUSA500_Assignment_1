@@ -1,3 +1,4 @@
+
 #--- load libraries ----
 install.packages("DAAG")
 install.packages("car")
@@ -465,7 +466,4 @@ choro_stdresclass <- ggplot() +
         axis.text = element_blank(),
         axis.title = element_blank(),
         panel.background = element_blank())
-
-
-
 
