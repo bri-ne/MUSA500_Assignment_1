@@ -21,7 +21,11 @@ library(cowplot) #for plotgrid
 library(classInt)#for jenks breaks
 library(rgdal)
 library(ggplot2)
+library(RColorBrewer)
 
+
+display.brewer.pal(10, 'BuPu')
+brewer.pal(9, 'BuPu')
 options(scipen=999)
 
 #---- Step 1: Upload Data ----
@@ -78,41 +82,37 @@ summary_table
 
 #---- Step 1A.ii: Histograms ----
 
-#check them out
+#check them out, regular histogram
 
-hist(ourdata$MEDHVAL)
-hist(ourdata$PCTBACHMOR)
-hist(ourdata$NBELPOV100)
-hist(ourdata$PCTVACANT)
-hist(ourdata$PCTSINGLES)
+hists <- histogram( ~ MEDHVAL +PCTBACHMOR +NBELPOV100 +PCTSINGLES +PCTVACANT, layout=c(2,3), data = ourdata,
+                    main='Distribution of Raw Variables', col="#8C96C6", sub = 'Figure 1', breaks = 50, scales='free')   
+hists
 
 #none look normal so we will examine if a log transformation will make them normal
 #remember to use 1+ if any variable has zero values
 #the only variable that does not have a 0 value is MEDHVAL
 
 ourdata$LNMEDHVAL <- log(ourdata$MEDHVAL)
-hist_LNMEDHVAL <- hist(ourdata$LNMEDHVAL)
 
 ourdata$LNPCTBACHMOR <- log(1+ourdata$PCTBACHMOR)
-hist_LNPCTBACHMOR <- hist(ourdata$LNPCTBACHMOR)
 
 ourdata$LNBELPOV100 <- log(1+ourdata$NBELPOV100)
-hist_LNBELPOV100 <- hist(ourdata$LNBELPOV100)
 
 ourdata$LNPCTVACANT <- log(1+ourdata$PCTVACANT)
-hist_LNPCTVACANT <- hist(ourdata$LNPCTVACANT)
 
 ourdata$LNPCTSINGLES <- log(1+ourdata$PCTSINGLES)
-hist_LNPCTSINGLES <- hist(ourdata$LNPCTSINGLES)
+
 
 #**************histograms of transformed variables for markdown************************
-hist_LNMEDHVAL
-hist_LNPCTBACHMOR
-hist_LNBELPOV100 
-hist_LNPCTVACANT
-hist_LNPCTSINGLES 
+#### Logged 
 
+LNhists <- histogram( ~ LNMEDHVAL +LNPCTBACHMOR +LNBELPOV100 +LNPCTSINGLES +LNPCTVACANT,layout=c(2,3),data = ourdata, 
+                    main='Distribution of Natural Log of Variables', sub= 'Figure 2', col="#B3CDE3", breaks = 50, scales='free')   
+LNhists
+#### Not logged
+hist(ourdata$NBELPOV100)
 
+hists
 #after viewing our logged variables, it seems like these are best to keep: 
 #this is my idea to save in a list (seems like it will help us remember), 
 #but Eugene doesn't do this, so it might not be necessary
@@ -130,25 +130,25 @@ dependentV <- "LNMEDHVAL"
 #investigate to see if our predictors relationship with the dependent variable
 # is linear by plotting as scatter plots
 
-pBelpov <- ggplot(ourdata, aes(x = LNMEDHVAL, y= LNBELPOV100))+
-            geom_point(size=2.5, color = 'darkslateblue', alpha = 0.5)
+pLNBelpov <- ggplot(ourdata, aes(x = LNMEDHVAL, y= LNBELPOV100))+
+            geom_point(size=2.5, color = "#4D004B", alpha = 0.5)+theme_minimal()
             
 pBach <- ggplot(ourdata, aes(x = LNMEDHVAL, y= PCTBACHMOR))+
-  geom_point(size=2.5, color = 'darkslateblue', alpha = 0.5)
+  geom_point(size=2.5, color = "#4D004B", alpha = 0.5)+theme_minimal()
   
   
 pVac <- ggplot(ourdata, aes(x = LNMEDHVAL, y= PCTVACANT))+
-  geom_point(size=2.5, color = 'darkslateblue', alpha = 0.5)
+  geom_point(size=2.5, color = "#4D004B", alpha = 0.5)+theme_minimal()
   
   
 
 pSing <- ggplot(ourdata, aes(x = LNMEDHVAL, y= PCTSINGLES))+
-  geom_point(size=2.5, color = 'darkslateblue', alpha = 0.5)
+  geom_point(size=2.5, color = "#4D004B", alpha = 0.5)+theme_minimal()
 
 
 
 scattergrid <- plot_grid( 
-           pBelpov, 
+           pLNBelpov, 
            pBach, 
            pVac, 
            pSing, 
@@ -156,7 +156,12 @@ scattergrid <- plot_grid(
                       "Bachelors Degree",
                       "% Vacant Homes", 
                       "% Single House Units"), 
+           label_x =-.1,
+           label_y = 1.01,
+           scale= 0.9,
+           align = 'hv',
            ncol = 2, nrow = 2)
+
 
 #***********final grid to include in markdown *******************
 scattergrid
