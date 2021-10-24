@@ -15,12 +15,10 @@ editor_options:
 
 ------------------------------------------------------------------------
 
--   
-
 ------------------------------------------------------------------------
 
 ```{r setup, include=FALSE, echo=FALSE, message=FALSE, warning=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set()
 
 #--- load libraries ----
 
@@ -39,6 +37,10 @@ library(classInt)#for jenks breaks
 library(rgdal)
 library(ggplot2)
 library(RColorBrewer)
+#install.packages("broom") *NEW*
+library(broom)
+
+
 
 options(scipen=999)
 
@@ -68,7 +70,154 @@ observation to use in our analysis.
 
 ###### **b. Exploratory Analysis**
 
-To get a better grasp on our observations we calculated summary
+The first step we took in analyzing our data set, was to calculate
+summary statistics. These statistics include the mean and standard
+deviation of both our dependent variable Median House Value (MEDHVAL)
+and four independent predictors:
+
+-   Number of Households Living Below the Poverty Line (NBELPOV)
+
+-   Percent of housing units that are detached single family houses
+    (PCTSINGLES)
+
+-   Percent of housing units that are vacant (PCTVACANT)
+
+-   Percent of residents in Block Group with at least a bachelor's
+    degree (PCTBACHMOR)
+
+Doing this gives us an cursory understanding of what the values our
+predictors and dependent variable look like. Additionally we explored
+the distribution of our data through the use of histograms. With a
+histogram plot of the values of our variables, we can determine if they
+are normally distributed. This is important for determining which kind
+of regression we will use. Different regression models have different
+assumptions. Some suggest that the residuals, or the estimate of error
+of observations in our sample, for each variable should be normally
+distributed.
+
+It is possible for a non-normally distributed variable to have normally
+distributed values, but it's much more likely that if the variable is
+not normally distributed neither will its residuals. However, Central
+Limit Theorm suggests that if you have enough observations, then the
+normality of your variable or its residuals shouldn't matter. In any
+case we are interested in exploring whether or not our variables are
+distributed, so in the case that they are not, we can transform them and
+preserve the assumptions of the regression we use. That is our intention
+because we hope to make an interpretable model and having normally
+distributed variables, and by extension residuals, our model will be
+easier to interpret.
+
+Correlation is a standardized measure that informs us how strong the
+relationship is between two variables. This measure of relational
+strength between variables is usually shown as *r*. The value of *r*
+ranges from $-1 \leq r \geq 1$. A value of 1 or -1 implies a strong
+correlation, but the slope and relationship will be negative with a
+value of -1, and positive with a value of 1. A value of 0 implies there
+is no linear relationship at all. It is possible that with a value of 0,
+two variables do have some strong correlation, but it will not be linear
+as the value *r* only calculates linear relationships.
+
+For our data we used Pearson's Correlation equation:
+
+$$r = \frac{{}\sum_{i=1}^{n} (x_i - \overline{x})(y_i - \overline{y})}
+{\sqrt{\sum_{i=1}^{n} (x_i - \overline{x})^2(y_i - \overline{y})^2}}$$
+
+Typically, if any two predictors have a correlation of $-0.8 < r > 0.8$
+, then we might need to remove them from the model due to their
+multicolinearity. Multicollinearity occurs when two variables are very
+strongly correlated to each other. If two variables with strong
+correlations were incorporated into the same model, there will be little
+benefit and our coefficient estimates may be less reliable. Since we are
+concerned with the interpretability of our model, we intended to avoid
+multicollinearity.
+
+###### **c. Multiple Regression Analysis**
+
+This analysis uses multiple Ordinary Least Squares (OLS) regression to
+examine the relationship between our variable of interest and our
+explanatory variables. OLS multiple regression determines the strength
+and direction (positive, negative, zero) of the relationship, and
+goodness of model fit. We calculate the coefficient 𝛽i of each predictor
+which is interpreted as the amount by which the dependent variable, in
+our case median house value, changes as the independent variable
+increases by one unit, holding all other predictors constant. The model
+includes the error term 𝜀, and is defined, for each observation i, as
+the vertical distance from the observed value and the predicted value of
+y. The error term is included in the equation to allow a point to fall
+either above or below the regression line. We are regressing median
+house value on percentage of homes living below poverty, percentage of
+individuals with a bachelor's degree or higher, percentage of vacant
+homes, and percentage of single house units in Philadelphia. Our
+regression equation is as follows:
+
+$$y = MEDHVAL = \beta_{0} + \beta_{1}LNBELPOV100 + \beta_{2}PCTBACHMOR + beta_{3}PCTVACANT + \beta_{4}PCTSINGLES + \epsilon$$
+
+OLS multiple regression models hold assumptions, the first being a
+linear relationship between x and y, which can was examined via our
+scatter plots in Figure 3. The second assumption is normality of
+residuals. This is important for point estimation, confidence intervals,
+and hypothesis tests for small samples due to the Central Limit Theorem.
+Normality is essential for all sample sizes in order to predict future
+values of y. If residuals appear to have a non-normal distribution, it
+may indicate a non-linear relationship, or non-normal distributions of
+the dependent/independent variables. This may be solved with a
+logarithmic transformation of the variables. The third and fourth
+assumptions are that residuals are random and homoscedastic. There
+should be no relationship or pattern between the observed values and the
+predicted values. Homoscedasticity means the variance of residuals
+should look constant for different values when plotted. The fifth
+assumption states that observations and residuals must be independent.
+If data has a temporal or spatial component, residuals of observations
+that are close in time or space will be autocorrelated, or dependent on
+one another. In this case, time series or spatial regression should be
+used over OLS. The Final assumption of multiple OLS regression is the
+absence of multicollinearity. Said differently, the predictors should
+not be strongly correlated with one another. The presence of
+multicollinearity causes unstable coefficient estimates and weakens the
+model. The parameters of multiple regression are coefficients β0 ,...,
+βk, where k = number of predictors. β0 represents the y- intercept of
+the regression line. Β1 ... βk represent the coefficients of variables
+x1 ... xk. Each independent variable will have its own slope coefficient
+which will indicate the relationship of that predictor with the
+dependent variable, controlling for all other independent variables in
+the regression. The function of OLS regression is to calculate the sum
+of least squares of residuals. The least squares estimates for β
+̂\_0,..., β ̂\_k are obtained when the quantity for SSE (equation below)
+is minimized. $$
+SSE = \sum_{i=1}^{n} \epsilon^2 = \sum_{i=1}^{n} (y-\hat{y})^2    
+= \sum_{i=1}^{n}(y_{i}- \hat{\beta}_{0}- \hat{\beta}_{1}x_{1i}- \hat{\beta}_{2}x_{2i}- ...- \hat{\beta}_{k}x_{ki})^2 $$
+
+Variance is the other parameter that needs to be estimated in multiple
+regression, calculated as $σ^2=\frac{SSE}{(n-(k+1))}=MSE$ , where k =
+number of predictors, n = number of observations, and MSE stands Mean
+Squared Error. In multiple regression, R2 is the coefficient of multiple
+determination, or the proportion of variance in the model explained by
+all k predictors, represented by the equation $R^2=1-\frac{SSE}{SST}$ .
+The R2 will increase with more predictors in the model and can be
+adjusted for the number of predictors with the equation
+$R_{adj}^2=\frac{(n-1) R^2-k}{n-(k+1)}$ The model utility test, F-ratio,
+is conducted on the regression model to determine a goodness of fit
+measure. It can be interpreted as a significance test for R2. The
+F-ratio tests the null hypothesis, H0 that all coefficients in the model
+are jointly zero, vs the alternative hypothesis Ha that at least one of
+the coefficients is not 0. Said differently, we test to make sure none
+of the independent variables is a significant predictor o the dependent
+variable. From the F-ratio we are looking for a P value that is less
+than 0.05. Once an F-ratio is determined, we run a T-test on every
+individual predictor. The null hypothesis states that the predictor (ie;
+Percentage of vacant homes) has no association with the dependent
+variable, once again in our case is median house value. Our goal is to
+reject the null hypothesis H0 in favor of the alternative hypothesis Ha
+which is Βi ≠ 0 for each predictor.
+
+
+###### **d. Additional Analysis**
+
+#### **Results**
+
+###### **a. Exploratory Results**
+
+To gain a better understanding of our observations we calculated summary
 statistics and examined the distribution of the variables. Below, Table
 1 shows the summary statistics calculated for our dependent variable,
 Median House Value (MEDHVAL) and our four independent variables:
@@ -78,20 +227,36 @@ Median House Value (MEDHVAL) and our four independent variables:
 -   Percent of housing units that are detached single family houses
     (PCTSINGLES)
 
--   Percentof housing units that are vacant (PCTVACANT)
+-   Percent of housing units that are vacant (PCTVACANT)
 
 -   Percent of residents in Block Group with at least a bachelor's
     degree (PCTBACHMOR)
 
-The distribution of our raw variables are shown in Figures 1. For the
-sake of exploration we also illustrated the distribution of the natural
-log of all our variables, as shown in Figure 2. From these
-visualizations, it was clear that both the dependent variable and
-NBELPOV were not normally distrubted. To account for this, we concluded
-that it would be best to use the natural logged dependent variable and
-NBELPOV. We used the raw versions of the remaining variables.
+The distribution of our raw variables are shown in Figure 1. We thought
+it wise to also illustrate the distribution of the natural log of all
+our variables, as shown in Figure 2. From these visualizations, it was
+clear that both the dependent variable and NBELPOV were not normally
+distributed, and as a result were likely not great for our linear
+regression. A linear regression model assumes that the residuals, or the
+estimate of error of observations in our sample, for each variable is
+normally distributed. And while it is possible for a variable with
+non-normal distribution to have normally distributed residuals, it is
+more likely that that variables with non-normal distributions also have
+non-normally distributed residuals. If it were the case that the
+residuals of our variables were not normally distributed, then we would
+be in violation of the assumption of linear regression. Though there is
+a case to be made, that we meet the criteria of Central Limit Theorem,
+based on the amount of observations we have, we have decided to address
+to non-normally distributed variables, so that we can confidently
+perform statistically hypothesis testing with our model.
 
-```{r summarydist_code, include=FALSE, echo=FALSE, warning=FALSE, message=FALSE}
+With this motivation, we concluded that it would be best to use the
+natural logged dependent variable and NBELPOV. Additionally we chose to
+use a natural log (and a natural log +1, where there were zeros in the
+observations), because those two variables were positively skewed. We
+used the raw versions of the remaining variables.
+
+```{r summarydist_code, include=TRUE, results='hide', echo=FALSE, warning=FALSE, message=FALSE}
 
 #### THIS FIRST CHUNK INCLUDES CODE FOR THE SUMMARY STATISTICS AND THE HISTOGRAMS ####
 
@@ -103,7 +268,7 @@ base::row(summary,1)
 #dropping all rows except the mean
 summary<-summary[-c(1,2,3,5,6),]
 #transposing so variables (mean and sd) are columns
-summary <- summary%>%t()%>%as.data.frame()
+summary <- summary%>%base::t()%>%as.data.frame()
 
 #getting sd and adding sd column
 sdMedV <- sd(ourdata$MEDHVAL)
@@ -166,7 +331,7 @@ LNhists <- histogram( ~ LNMEDHVAL +LNPCTBACHMOR +LNBELPOV100 +LNPCTSINGLES +LNPC
 
 ```
 
-```{r summary_output,  echo=FALSE, warning=FALSE, message=FALSE}
+```{r summary_output,  include = TRUE, echo= FALSE, warning=FALSE, message=FALSE}
 
 summary_table
 hists
@@ -175,15 +340,28 @@ LNhists
 
 ```
 
-To further explore out data, we wanted to determine if any of our
-independent, or predictor, variables were correlated with our dependent
-variable.
+Next, we determined if there were any interesting relationships between
+our predictors and our dependent variable. We were especially interested
+in figuring out what kind of relationship our variables had, and whether
+or not they were linear. Knowing this would help inform us what kind of
+regression to use and what other measures we should use for exploring
+our data. For example, as you'll see below we measured for correlation,
+but we first needed to know if we could a measure for linear
+relationships.
 
-If two of our independent or predictor variables were correlated with
-each other, we would remove one of them. Collinear independent variable
-s
+From our scatter plots in Figure 3, we can see that our predictors seems
+to have a linear relationship with the natural log of our dependent
+variable, Median House Value. These plots also give us an impression of
+the relative strength of relationship between our predictors and the
+dependent variable. But, our model will give us a clearer picture with
+interpretable statistical meaning. For now, we are interested in
+exploring the relationship between just our predictors, in order to rule
+out any potential strong correlation between them.
 
-```{r correlation_code, message=FALSE, echo=FALSE, warning=FALSE, include=FALSE}
+```{r scatter_code, message=FALSE, echo=FALSE, results='hide', warning=TRUE, include=FALSE}
+
+#### THIS CHUNK INCLUDE SCATTER PLOT CODE ####
+
 #---- Step 1B: Variable Scatter Plots ----
 #investigate to see if our predictors relationship with the dependent variable
 # is linear by plotting as scatter plots
@@ -201,7 +379,7 @@ pVac <- ggplot(ourdata, aes(x = LNMEDHVAL, y= PCTVACANT))+
   
 
 pSing <- ggplot(ourdata, aes(x = LNMEDHVAL, y= PCTSINGLES))+
-  geom_point(size=2.5, color = "#4D004B", alpha = 0.5)+theme_minimal()
+  geom_point(size=2.5, color = "#4D004B", alpha = 0.5)+theme_minimal()+labs(caption="Figure 3")
 
 
 
@@ -213,7 +391,8 @@ scattergrid <- plot_grid(
            labels = c("% Below Poverty (LN)", 
                       "Bachelors Degree",
                       "% Vacant Homes", 
-                      "% Single House Units"), 
+                      "% Single House Units"),
+           label_size = 11,
            label_x =-.1,
            label_y = 1.03,
            scale= 0.9,
@@ -224,97 +403,285 @@ scattergrid <- plot_grid(
 
 ```
 
-```{r correlation_output, warning=FALSE, message=FALSE, echo=TRUE, fig.dim = c(8, 12)}
+```{r scatter_output, include=TRUE, warning=FALSE, message=FALSE, echo=FALSE, fig.dim = c(10,12)}
 scattergrid
 
 ```
 
-###### **c. Multiple Regression Analysis**
+Now knowing that we are interested in the linear relationships our
+predictors have with our dependent variable, we need to investigate
+whether there is a strong linear relationship between any of our
+predictors. We investigated this using a correlation measure.
 
-This analysis uses multiple Ordinary Least Squares (OLS) regression to
-examine the relationship between our variable of interest and our
-explanatory variables. OLS multiple regression determines the strength
-and direction (positive, negative, zero) of the relationship, and
-goodness of model fit. We calculate the coefficient 𝛽i of each predictor
-which is interpreted as the amount by which the dependent variable, in
-our case median house value, changes as the independent variable
-increases by one unit, holding all other predictors constant. The model
-includes the error term 𝜀, and is defined, for each observation i, as
-the vertical distance from the observed value and the predicted value of
-y. The error term is included in the equation to allow a point to fall
-either above or below the regression line. We are regressing median
-house value on percentage of homes living below poverty, percentage of
-individuals with a bachelor's degree or higher, percentage of vacant
-homes, and percentage of single house units in Philadelphia. Our
-regression equation is as follows:
+```{r corr_code_output, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
 
-$$y = MEDHVAL = \beta_{0} + \beta_{1}LNBELPOV100 + \beta_{2}PCTBACHMOR + beta_{3}PCTVACANT + \beta_{4}PCTSINGLES + \epsilon$$
+#### THIS CHUNK INCLUDE CORR CODE AND OUTPUT 
+#---- Step 1C: Pearson Correlations ----
+#make new df that just has our predictors and dependent variable
 
-OLS multiple regression models hold assumptions, the first being a
-linear relationship between x and y, which can be teste via scatter
-plot. The second assumption is normality of residuals. This is important
-for point estimation, confidence intervals, and hypothesis tests for
-small samples due to the Central Limit Theorem. Normality is essential
-for all sample sizes in order to predict future values of y. If
-residuals appear to have a non-normal distribution, it may indicate a
-non-linear relationship, or non-normal distributions of the
-dependent/independent variables. This may be solved with a logarithmic
-transformation of the variables. The third and fourth assumptions are
-that residuals are random and homoscedastic. There should be no
-relationship or pattern between the observed values and the predicted
-values. Homoscedasticity means the variance of residuals should look
-constant for different values when plotted. The fifth assumption states
-that observations and residuals must be independent. If data has a
-temporal or spatial component, residuals of observations that are close
-in time or space will be autocorrelated, or dependent on one another. In
-this case, time series or spatial regression should be used over OLS.
-The Final assumption of multiple OLS regression is the absence of
-multicollinearity. Said differently, the predictors should not be
-strongly correlated with one another. The presence of multicollinearity
-causes unstable coefficient estimates and weakens the model. The
-parameters of multiple regression are coefficients β0 ,..., βk, where k
-= number of predictors. β0 represents the y- intercept of the regression
-line. Β1 ... βk represent the coefficients of variables x1 ... xk. Each
-independent variable will have its own slope coefficient which will
-indicate the relationship of that predictor with the dependent variable,
-controlling for all other independent variables in the regression. The
-function of OLS regression is to calculate the sum of least squares of
-residuals. The least squares estimates for β ̂\_0,..., β ̂\_k are
-obtained when the quantity for SSE (equation below) is minimized. $$
-SSE = \sum_{i=1}^{n} \epsilon^2 = \sum_{i=1}^{n} (y-\hat{y})^2    
-= \sum_{i=1}^{n}(y_{i}- \hat{\beta}_{0}- \hat{\beta}_{1}x_{1i}- \hat{\beta}_{2}x_{2i}- ...- \hat{\beta}_{k}x_{ki})^2
-$$
+pred_var <- ourdata%>%dplyr::select(LNMEDHVAL, LNBELPOV100, PCTBACHMOR, PCTSINGLES, PCTVACANT)
+pcorr <- cor(pred_var, method="pearson")
 
-Variance is the other parameter that needs to be estimated in multiple
-regression, calculated as $σ^2=\frac{SSE}{(n-(k+1))}=MSE$ , where k =
-number of predictors, n = number of observations, and MSE stands Mean
-Squared Error. In multiple regression, R2 is the coefficient of multiple
-determination, or the proportion of variance in the model explained by
-all k predictors, represented by the equation $R^2=1-\frac{SSE}{SST}$ .
-The R2 will increase with more predictors in the model and can be
-adjusted for the number of predictors with the equation
-$R_{adj}^2=\frac{(n-1) R^2-k}{n-(k+1)}$ The model utility test, F-ratio,
-is conducted on the regression model to determine a goodness of fit
-measure. It can be interpreted as a significance test for R2. The
-F-ratio tests the null hypothesis, H0 that all coefficients in the model
-are jointly zero, vs the alternative hypothesis Ha that at least one of
-the coefficients is not 0. Said differently, we test to make sure none
-of the independent variables is a significant predictor o the dependent
-variable. From the F-ratio we are looking for a P value that is less
-than 0.05. Once an F-ratio is determined, we run a T-test on every
-individual predictor. The null hypothesis states that the predictor (ie;
-Percentage of vacant homes) has no association with the dependent
-variable, once again in our case is median house value. Our goal is to
-reject the null hypothesis H0 in favor of the alternative hypothesis Ha
-which is Βi ≠ 0 for each predictor.
+#Observe that there isnt severe multicollinearity (i.e., no correlations where
+# r>.8 or r<-.8), so we can include all four predictors in the regression.
 
-###### **d. Additional Analysis**
+#*********matrix for markdown*****************************************
+pcorr <- pcorr%>%kable(digits = c(4, 4, 4, 4, 4),
+            align = c("l", "r", "r", "r", "r"))%>%kable_styling()%>%footnote(general_title = "Pearson's Correlation of Predictors",
+             general = "Table 1")
 
-#### **Results**
 
-###### **a. Exploratory Results**
+pcorr
+```
+
+You'll notice that each predictor's correlation with itself is 1. But
+none of our predictor variables have a correlation with another \> 0.8
+or \<-0.8, so our model will be free from multicollinearity.
+
+One last thing we looked at in our exploration of our data, is the
+distribution of our predictor's values across space. Below are a series
+of maps that show this distribution, with values broken out by Jenks
+breaks. Map 1 shows us how our dependent variable, median house value,
+differs across census tract, and Map 2 show our predictors variables
+across tracts. Most have 5 breaks, but the values for LN %BELPOV were
+note varied enough so we there are only three breaks.
+
+```{r choropleth_code, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE, results='hide'}
+
+#### THIS CHUNK INCLUDES THE MAPPING & JENKS CODE ###
+
+#---- Step 2A: Open Regression_Data shapefile (or GeoJSON in our case)----
+#shapefiles are really hard to work with without having to download and mess with working directories in the code
+#SO i converted the shapefile to a GeoJSON and will use that instead
+
+
+ourdata_geom <- st_read("https://raw.githubusercontent.com/bri-ne/MUSA500_Assignment_1/main/RegressionData.geojson")
+
+
+#getting Jenks Breaks for LNMEDHVAL 
+classes <- classIntervals(ourdata_geom$LNMEDHVAL, n = 5, style = "jenks")
+classes$brks
+
+#we'll create a new column in our sf object using the base R cut() function to cut up our percent variable into distinct groups.
+
+ourdata_geom <- ourdata_geom %>%
+  mutate(LNMEDVHAL_class = cut(LNMEDHVAL, classes$brks, include.lowest = T))
+
+
+#mapping
+choro_LNMEDHVAL <- ggplot() +
+  geom_sf(data = ourdata_geom,
+          aes(fill = LNMEDVHAL_class),
+          alpha = 1,
+          colour = "gray80",
+          size = 0.15) +
+  scale_fill_brewer(palette = "PuBu",
+                    name = "LN Median House Value") +
+  labs(x = NULL, y = NULL,
+       title = "LN Median House Value in Philadelphia by Block Group",
+       subtitle = "Source: U.S. Census",
+       caption = "Map 1") +
+  theme(line = element_blank(),
+        axis.text = element_blank(),
+        axis.title = element_blank(),
+        panel.background = element_blank())
+
+#making remaining JENKS for maps --------------------
+
+#PctVacant Jenks
+PVclasses <- classIntervals(ourdata_geom$PCTVACANT, n = 5, style = "jenks")
+
+PVclasses$brks
+
+ourdata_geom <- ourdata_geom %>%
+  mutate(PCTVACANT_class = cut(PCTVACANT, PVclasses$brks, include.lowest = T))
+
+#PctSingle Jenks
+PSclasses <- classIntervals(ourdata_geom$PCTSINGLES, n = 5, style = "jenks")
+
+PSclasses$brks
+
+ourdata_geom <- ourdata_geom %>%
+  mutate(PCTSINGLES_class = cut(PCTSINGLES, PSclasses$brks, include.lowest = T))
+
+#PctBach Jenks
+PBclasses <- classIntervals(ourdata_geom$PCTBACHMOR, n = 5, style = "jenks")
+
+PBclasses$brks
+
+ourdata_geom <- ourdata_geom %>%
+  mutate(PCTBACHMOR_class = cut(PCTBACHMOR, PBclasses$brks, include.lowest = T))
+
+#LNBelPov Jenks
+BPclasses <- classIntervals(ourdata_geom$LNNBELPOV, n = 3, style = "jenks")
+
+BPclasses$brks
+ourdata_geom <- ourdata_geom %>%
+  mutate(LNNBELPOV_class = cut(LNNBELPOV, BPclasses$brks, include.lowest = T))
+
+
+#mapping the rest --------------------------------------
+
+#PctVacant Map
+
+choro_PctVac <- ggplot() +
+  geom_sf(data = ourdata_geom,
+          aes(fill = PCTVACANT_class),
+          #alpha = 1,
+          colour = NA) +
+  scale_fill_brewer(palette = "PuBu",
+                    name = "Percent Houses Vacant") +
+  labs(x = NULL, y = NULL,
+       subtitle = "Perecent of Vacant Houses\nin Philadelphia by Block Group") +
+  theme(line = element_blank(),
+        axis.text = element_blank(),
+        axis.title = element_blank(),
+        panel.background = element_blank())
+
+
+
+#PctSing Map
+choro_PctSing <- ggplot() +
+  geom_sf(data = ourdata_geom,
+          aes(fill = PCTSINGLES_class),
+          #alpha = 1,
+          colour = NA) +
+  scale_fill_brewer(palette = "PuBu",
+                    name = "Percent Single House Units") +
+  labs(x = NULL, y = NULL,
+       subtitle = "Perecent of Single House Units\nin Philadelphia by Block Group") +
+  theme(line = element_blank(),
+        axis.text = element_blank(),
+        axis.title = element_blank(),
+        panel.background = element_blank())
+
+
+#PctBach Map
+choro_PctBach <- ggplot() +
+  geom_sf(data = ourdata_geom,
+          aes(fill = PCTBACHMOR_class),
+          #alpha = 1,
+          colour = NA) +
+  scale_fill_brewer(palette = "PuBu",
+                    name = "Percent Bachelors Degree") +
+  labs(x = NULL, y = NULL,
+       subtitle = "Percent of Individuals with a Bachelors\nDegree or Higher in Philadelphia\nby Block Group") +
+  theme(line = element_blank(),
+        axis.text = element_blank(),
+        axis.title = element_blank(),
+        panel.background = element_blank())
+
+#LNBelPov Map
+choro_LNBelPov <- ggplot() +
+  geom_sf(data = ourdata_geom,
+          aes(fill = LNNBELPOV_class),
+          #alpha = 1,
+          colour = NA) +
+  scale_fill_brewer(palette = "PuBu",
+                    name = "LN Percent Households\nin Poverty") +
+  labs(x = NULL, y = NULL,
+       subtitle = "LN Percent of Households Living\nin Poverty in Philadelphia\nby Block Group",
+       caption = "Map 2. Source: U.S. Census") +
+  theme(line = element_blank(),
+        axis.text = element_blank(),
+        axis.title = element_blank(),
+        panel.background = element_blank())
+
+#--- Unfortunately I had to do three breaks b/c the values for the LN %BELPOV were not varied enough
+
+
+mapgrid <- plot_grid( choro_PctVac, 
+                      choro_PctSing, 
+                      choro_PctBach, 
+                      choro_LNBelPov,
+                      align = c("hv","hv","hv","hv"),
+                          ncol = 2, nrow = 2)
+
+```
+
+```{r maps_output, include=TRUE, echo=FALSE, fig.dim=c(10,12), warning=FALSE, message=FALSE}
+
+choro_LNMEDHVAL
+mapgrid
+```
+
+The map of the percent individuals with a Bachelors or higher looks the
+most similar to our dependent variable, while the percent of households
+living in poverty looks almost the opposite. It also appears as though
+where there are people with at least Bachelors, there are also single
+house units and house value is higher.
 
 ###### **b. Regression Results**
+
+```{r regressionanalysis, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE, results='hide'}
+
+#---- Step 3 : Regression Analysis -------
+
+#Run regression model
+#fit <- lm(MEDHVAL ~ LNBELPOV100 + PCTBACHMOR + PCTVACANT + PCTSINGLES, data=ourdata)
+fit <- lm(LNMEDHVAL ~ LNBELPOV100 + PCTBACHMOR + PCTVACANT + PCTSINGLES, data=ourdata)
+
+#3A
+
+fit.summary<- broom::tidy(fit)%>%kable(
+            align = c("l", "r", "r", "r", "r"))%>%kable_styling()%>%footnote(general_title = "Regression Summary",
+             general = "Table 2")
+
+#Summary of Regression
+#all predictors are significant - p value < 0.05
+#R squared - 55.38% = % of variance in median house value explained 
+    #by predictors 
+#Adjusted R Squared - 55.28% = % of variance in median house value explained
+    #BY predictors adjusted for the number of predictors
+#P value associated with F-ratio of 532 is less than 0.0001 -
+    #We can reject the H0 that all Beta coefficients for the predictors are 0
+
+#3B
+anova.fit<- broom::tidy(anova(fit))%>%kable(digits = c(0, 4, 4, 4, 4),
+            align = c("l", "r", "r", "r", "r", "r"))%>%kable_styling()%>%footnote(general_title = "ANOVA",
+             general = "Table 3")
+
+
+
+#ANOVA table containing SSE and SSR
+#SSR = SS(LNBELPOV100) + SS(PCTBACHMOR) +SS(PCTVACANTS) + SS(PCTSINGLES) = 
+    # 869866100108 + 2345334804156 +  58030777316 + 154801231763 = 3428032913343
+    # Amount of total variance in Median House value explained by model
+#SSE = 2761620505240 = amount of total variance in median house value that is 
+    # unexplained by the model
+
+#3C
+#new column saving predicted values 
+ourdata$predvals <- fitted(fit)
+
+#new column saving residuals
+ourdata$resids <- residuals(fit)
+
+#New column saving standardized residuals
+ourdata$stdres <- rstandard(fit)
+
+#3D Create a scatterplot with standardized residuals on Y axis and
+    # Predicted Values on x axis. 
+
+ResidualPlot<- ggplot(ourdata, aes(x = predvals, y= stdres))+
+                  geom_point(size=1.5, color = 'darkslateblue', alpha = .5)+
+                  geom_hline(yintercept=0, size = .5)+
+                  labs(x = 'Predicted LN Median House Value', 
+                       y = 'Standardized Residuals',
+                       caption = 'Figure 4')
+
+```
+
+```{r summary.anova, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+fit.summary
+anova.fit
+
+```
+
+```{r residplot, include=TRUE, echo=FALSE, message=FALSE, warning=FALSE}
+ResidualPlot
+```
+
 
 ###### **c. Regression Assumption Checks**
 
