@@ -8,6 +8,8 @@ output:
     toc_float: true 
     toc_depth: 6
     code_folding: "hide"
+    theme: cosmo
+    highlight: textmate
 editor_options: 
   markdown: 
     wrap: 72
@@ -39,6 +41,7 @@ library(ggplot2)
 library(RColorBrewer)
 #install.packages("broom") *NEW*
 library(broom)
+library(stargazer)
 
 
 
@@ -98,7 +101,7 @@ distributed.
 It is possible for a non-normally distributed variable to have normally
 distributed values, but it's much more likely that if the variable is
 not normally distributed neither will its residuals. However, Central
-Limit Theorm suggests that if you have enough observations, then the
+Limit Theorem suggests that if you have enough observations, then the
 normality of your variable or its residuals shouldn't matter. In any
 case we are interested in exploring whether or not our variables are
 distributed, so in the case that they are not, we can transform them and
@@ -133,7 +136,7 @@ multicollinearity.
 
 ###### **c. Multiple Regression Analysis**
 
-This analysis uses multiple Ordinary Least Squares (OLS) regression to
+We will use multiple Ordinary Least Squares (OLS) regression to
 examine the relationship between our variable of interest and our
 explanatory variables. OLS multiple regression determines the strength
 and direction (positive, negative, zero) of the relationship, and
@@ -150,10 +153,10 @@ individuals with a bachelor's degree or higher, percentage of vacant
 homes, and percentage of single house units in Philadelphia. Our
 regression equation is as follows:
 
-$$y = MEDHVAL = \beta_{0} + \beta_{1}LNBELPOV100 + \beta_{2}PCTBACHMOR + beta_{3}PCTVACANT + \beta_{4}PCTSINGLES + \epsilon$$
+$$y = MEDHVAL = \beta_{0} + \beta_{1}LNBELPOV100 + \beta_{2}PCTBACHMOR + \beta_{3}PCTVACANT + \beta_{4}PCTSINGLES + \epsilon$$
 
 OLS multiple regression models hold assumptions, the first being a
-linear relationship between x and y, which can was examined via our
+linear relationship between x and y, which was examined via our
 scatter plots in Figure 3. The second assumption is normality of
 residuals. This is important for point estimation, confidence intervals,
 and hypothesis tests for small samples due to the Central Limit Theorem.
@@ -174,31 +177,32 @@ used over OLS. The Final assumption of multiple OLS regression is the
 absence of multicollinearity. Said differently, the predictors should
 not be strongly correlated with one another. The presence of
 multicollinearity causes unstable coefficient estimates and weakens the
-model. The parameters of multiple regression are coefficients β0 ,...,
-βk, where k = number of predictors. β0 represents the y- intercept of
-the regression line. Β1 ... βk represent the coefficients of variables
-x1 ... xk. Each independent variable will have its own slope coefficient
+model. The parameters of multiple regression are coefficients β~0~ ,...,
+β~k~, where k = number of predictors. β~0~ represents the y- intercept of
+the regression line. β~1~ ... β~k~ represent the coefficients of variables
+x~1~ ... x~k~. Each independent variable will have its own slope coefficient
 which will indicate the relationship of that predictor with the
 dependent variable, controlling for all other independent variables in
-the regression. The function of OLS regression is to calculate the sum
-of least squares of residuals. The least squares estimates for β
-̂\_0,..., β ̂\_k are obtained when the quantity for SSE (equation below)
-is minimized. $$
-SSE = \sum_{i=1}^{n} \epsilon^2 = \sum_{i=1}^{n} (y-\hat{y})^2    
-= \sum_{i=1}^{n}(y_{i}- \hat{\beta}_{0}- \hat{\beta}_{1}x_{1i}- \hat{\beta}_{2}x_{2i}- ...- \hat{\beta}_{k}x_{ki})^2 $$
+the regression. OLS regression calculates the sum of the least squares of residuals.
+The least squares estimates for β̂\_0,..., β ̂\_k are obtained when the quantity for 
+SSE (equation below)is minimized. 
 
+$$ 
+SSE = \sum_{i=1}^{n} \epsilon^2 = \sum_{i=1}^{n} (y-\hat{y})^2    
+= \sum_{i=1}^{n}(y_{i}- \hat{\beta}_{0}- \hat{\beta}_{1}x_{1i}- \hat{\beta}_{2}x_{2i}- ...- \hat{\beta}_{k}x_{ki})^2 
+$$
 Variance is the other parameter that needs to be estimated in multiple
 regression, calculated as $σ^2=\frac{SSE}{(n-(k+1))}=MSE$ , where k =
 number of predictors, n = number of observations, and MSE stands Mean
-Squared Error. In multiple regression, R2 is the coefficient of multiple
+Squared Error. In multiple regression, R^2^ is the coefficient of multiple
 determination, or the proportion of variance in the model explained by
 all k predictors, represented by the equation $R^2=1-\frac{SSE}{SST}$ .
-The R2 will increase with more predictors in the model and can be
+The R^2^ will increase with more predictors in the model and can be
 adjusted for the number of predictors with the equation
 $R_{adj}^2=\frac{(n-1) R^2-k}{n-(k+1)}$ The model utility test, F-ratio,
 is conducted on the regression model to determine a goodness of fit
-measure. It can be interpreted as a significance test for R2. The
-F-ratio tests the null hypothesis, H0 that all coefficients in the model
+measure. It can be interpreted as a significance test for R^2^. The
+F-ratio tests the null hypothesis, H~0~ that all coefficients in the model
 are jointly zero, vs the alternative hypothesis Ha that at least one of
 the coefficients is not 0. Said differently, we test to make sure none
 of the independent variables is a significant predictor o the dependent
@@ -207,8 +211,8 @@ than 0.05. Once an F-ratio is determined, we run a T-test on every
 individual predictor. The null hypothesis states that the predictor (ie;
 Percentage of vacant homes) has no association with the dependent
 variable, once again in our case is median house value. Our goal is to
-reject the null hypothesis H0 in favor of the alternative hypothesis Ha
-which is Βi ≠ 0 for each predictor.
+reject the null hypothesis H~0~ in favor of the alternative hypothesis H~a~
+which is Β~i~ ≠ 0 for each predictor.
 
 
 ###### **d. Additional Analysis**
@@ -613,6 +617,14 @@ house units and house value is higher.
 
 ###### **b. Regression Results**
 
+After we explore our data and transform our variables as needed, the final regression equation is as follows:
+
+$$y = LNMEDHVAL = \beta_{0} + \beta_{1}LNBELPOV100 + \beta_{2}PCTBACHMOR + \beta_{3}PCTVACANT + \beta_{4}PCTSINGLES + \epsilon$$
+We regressed the natural log of median house value (LNMEDHVAL) on the natural log of the number of people living below poverty (LNBELPOV100), the percent of individuals with Bachelor's Degrees or higher (PCTBACHMORE), the percent of vacant houses (PCTVACANT), and the percent of single house units (PCTSINGLES). The regression output tells  us  that  these variables are highly significant predictors and are positively associated with the median house value (p<0.0001 for all variables). The coefficients will have a modified interpretation because we have used a logarithmic transformation on the dependent variable. To interpret the beta coefficient of LNBELPOV100, we can say a 1% increase in the number of individuals living in poverty corresponds to a $(1.01^{\beta_1} - 1)*100 = (1.01^{-.079} - 1) * 100 = -0.0786 \%$ change (i.e., a .0786% decrease) in median house value. The regression also tells us that a 1% increase in the percent of individuals with a Bachelor's degree or more is associated with a change in median house value by $\beta_2 ln(\frac {101}{100} = 0.0209 ln (\frac {101}{100}) = 0.00021$ change (i.e., an increase in median house value by 0.00021 \$). The  next coefficients will be interpreted in a similar way. A 1% increase in percent of vacant homes corresponds to an approximately $\beta_3 ln(\frac {101}{100} = 0.0191 ln (\frac {101}{100}) = 0.00019$ \$ increase in median house value. Lastly, a 1% increase in percent of single unit homes corresponds to an approximately $\beta_4 ln(\frac {101}{100} = 0.0029 ln (\frac {101}{100}) = 0.00003$ \$ increase in median house value. 
+
+The p value of less than 0.0001 for LNBELPOV100 tells us that if there is actually no relationship between LNBELPOV100 and the dependent variable LNMEDHVAL (i.e., if  the  null  hypothesis  that  $\beta_1 =0$  is  actually  true),  then  the  probability  of  getting  a $\beta_1$ coefficient  estimate  of  -0.0789054  is  less  than  0.0001.  Similarly,  the  p-value  of  less  than 0.0001 for PCTBACHMORE tells us that if there is actually no relationship between PCTBACHMORE and the dependent variable MEDHVAL (i.e., if the null hypothesis that /beta_2=0 is actually true), then the probability of getting a $\beta_2$ coefficient estimate of 0.02091 is less than 0.0001.
+
+
 ```{r regressionanalysis, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE, results='hide'}
 
 #---- Step 3 : Regression Analysis -------
@@ -621,11 +633,15 @@ house units and house value is higher.
 #fit <- lm(MEDHVAL ~ LNBELPOV100 + PCTBACHMOR + PCTVACANT + PCTSINGLES, data=ourdata)
 fit <- lm(LNMEDHVAL ~ LNBELPOV100 + PCTBACHMOR + PCTVACANT + PCTSINGLES, data=ourdata)
 
+summary(fit)
 #3A
 
 fit.summary<- broom::tidy(fit)%>%kable(
             align = c("l", "r", "r", "r", "r"))%>%kable_styling()%>%footnote(general_title = "Regression Summary",
              general = "Table 2")
+
+
+
 
 #Summary of Regression
 #all predictors are significant - p value < 0.05
@@ -640,7 +656,6 @@ fit.summary<- broom::tidy(fit)%>%kable(
 anova.fit<- broom::tidy(anova(fit))%>%kable(digits = c(0, 4, 4, 4, 4),
             align = c("l", "r", "r", "r", "r", "r"))%>%kable_styling()%>%footnote(general_title = "ANOVA",
              general = "Table 3")
-
 
 
 #ANOVA table containing SSE and SSR
@@ -671,6 +686,7 @@ ResidualPlot<- ggplot(ourdata, aes(x = predvals, y= stdres))+
                        caption = 'Figure 4')
 
 ```
+
 
 ```{r summary.anova, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
 fit.summary
