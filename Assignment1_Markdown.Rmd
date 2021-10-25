@@ -8,7 +8,7 @@ output:
     toc_float: true 
     toc_depth: 6
     code_folding: "hide"
-    theme: cosmo
+    theme: sandstone
     highlight: textmate
 editor_options: 
   markdown: 
@@ -620,10 +620,16 @@ house units and house value is higher.
 After we explore our data and transform our variables as needed, the final regression equation is as follows:
 
 $$y = LNMEDHVAL = \beta_{0} + \beta_{1}LNBELPOV100 + \beta_{2}PCTBACHMOR + \beta_{3}PCTVACANT + \beta_{4}PCTSINGLES + \epsilon$$
-We regressed the natural log of median house value (LNMEDHVAL) on the natural log of the number of people living below poverty (LNBELPOV100), the percent of individuals with Bachelor's Degrees or higher (PCTBACHMORE), the percent of vacant houses (PCTVACANT), and the percent of single house units (PCTSINGLES). The regression output tells  us  that  these variables are highly significant predictors and are positively associated with the median house value (p<0.0001 for all variables). The coefficients will have a modified interpretation because we have used a logarithmic transformation on the dependent variable. To interpret the beta coefficient of LNBELPOV100, we can say a 1% increase in the number of individuals living in poverty corresponds to a $(1.01^{\beta_1} - 1)*100 = (1.01^{-.079} - 1) * 100 = -0.0786 \%$ change (i.e., a .0786% decrease) in median house value. The regression also tells us that a 1% increase in the percent of individuals with a Bachelor's degree or more is associated with a change in median house value by $\beta_2 ln(\frac {101}{100} = 0.0209 ln (\frac {101}{100}) = 0.00021$ change (i.e., an increase in median house value by 0.00021 \$). The  next coefficients will be interpreted in a similar way. A 1% increase in percent of vacant homes corresponds to an approximately $\beta_3 ln(\frac {101}{100} = 0.0191 ln (\frac {101}{100}) = 0.00019$ \$ increase in median house value. Lastly, a 1% increase in percent of single unit homes corresponds to an approximately $\beta_4 ln(\frac {101}{100} = 0.0029 ln (\frac {101}{100}) = 0.00003$ \$ increase in median house value. 
+We regressed the natural log of median house value (LNMEDHVAL) on the natural log of the number of people living below poverty (LNBELPOV100), the percent of individuals with Bachelor's Degrees or higher (PCTBACHMORE), the percent of vacant houses (PCTVACANT), and the percent of single house units (PCTSINGLES). The regression output tells  us  that  these variables are highly significant predictors and are positively associated with the median house value (p<0.0001 for all variables). The coefficients will have a modified interpretation because we have used a logarithmic transformation on the dependent variable. To interpret the beta coefficient of LNBELPOV100, we can say a 1% increase in the number of individuals living in poverty corresponds to a $(1.01^{\beta_1} - 1)*100 = (1.01^{-.079} - 1) * 100 = -0.0786 \%$ change (i.e., a .0786% decrease) in median house value. The regression also tells us that a 1% increase in the percent of individuals with a Bachelor's degree or more is associated with a change in median house value by $\beta_2 ln(\frac {101}{100}) = 0.0209 ln (\frac {101}{100}) = 0.00021$ \$ (i.e., an increase in median house value by 0.00021 \$). The  next coefficients will be interpreted in a similar way. A 1% increase in percent of vacant homes corresponds to an approximately $\beta_3 ln(\frac {101}{100}) = 0.0191 ln (\frac {101}{100}) = 0.00019$ \$ increase in median house value. Lastly, a 1% increase in percent of single unit homes corresponds to an approximately $\beta_4 ln(\frac {101}{100}) = 0.0029 ln (\frac {101}{100}) = 0.00003$ \$ increase in median house value. 
 
-The p value of less than 0.0001 for LNBELPOV100 tells us that if there is actually no relationship between LNBELPOV100 and the dependent variable LNMEDHVAL (i.e., if  the  null  hypothesis  that  $\beta_1 =0$  is  actually  true),  then  the  probability  of  getting  a $\beta_1$ coefficient  estimate  of  -0.0789054  is  less  than  0.0001.  Similarly,  the  p-value  of  less  than 0.0001 for PCTBACHMORE tells us that if there is actually no relationship between PCTBACHMORE and the dependent variable MEDHVAL (i.e., if the null hypothesis that /beta_2=0 is actually true), then the probability of getting a $\beta_2$ coefficient estimate of 0.02091 is less than 0.0001.
+The p value of less than 0.0001 for LNBELPOV100 tells us that if there is actually no relationship between LNBELPOV100 and the dependent variable LNMEDHVAL (i.e., if  the  null  hypothesis  that  $\beta_1 =0$  is  actually  true),  then  the  probability  of  getting  a $\beta_1$ coefficient  estimate  of  -0.0789054  is  less  than  0.0001.  Similarly,  the  p-value  of  less  than 0.0001 for PCTBACHMORE tells us that *if* there is actually no relationship between PCTBACHMORE and the dependent variable MEDHVAL (i.e., if the null hypothesis that $\beta_2=0$ is actually true), then the probability of getting a $\beta_2$ coefficient estimate of 0.02091 is less than 0.0001. The same interpretations can be made for the p values of PCTVACANT and PCTSINGLES - both of these predictors are statistically significant with a very low p value < 0.0001. These low probabilities indicate that we can safely reject  
+$H_0: \beta_1 = 0$ for $H_a: \beta_1 ≠ 0$,   
+$H_0: \beta_2 = 0$ for $H_a: \beta_2 ≠ 0$,   
+$H_0: \beta_3 = 0$ for $H_a: \beta_3 ≠ 0$,   
+$H_0: \beta_4 = 0$ for $H_a: \beta_4 ≠ 0$   
+(at most reasonable levels of α = P(Type I error)).
 
+A over half of the variance in the dependent variable is explained by the model (R2 and Adjusted R2 are 0.6623 and 0.6615, respectively). The low p-value associated with the F-ratio shows that we can reject the null hypothesis that all coefficients in the model are 0.
 
 ```{r regressionanalysis, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE, results='hide'}
 
@@ -636,12 +642,14 @@ fit <- lm(LNMEDHVAL ~ LNBELPOV100 + PCTBACHMOR + PCTVACANT + PCTSINGLES, data=ou
 summary(fit)
 #3A
 
-fit.summary<- broom::tidy(fit)%>%kable(
-            align = c("l", "r", "r", "r", "r"))%>%kable_styling()%>%footnote(general_title = "Regression Summary",
-             general = "Table 2")
+fit.summary<- broom::tidy(fit)%>%
+              kable(
+              align = c("l", "r", "r", "r", "r"))%>%kable_styling()%>%footnote(general_title = "Regression Summary",
+              general = "Table 2")
 
-
-
+#displays the summary statistics and R squared
+fit.stats<- glance(fit)%>%kable()%>%kable_styling()%>%footnote(general_title = "Regression Summary",
+              general = "Table 3")
 
 #Summary of Regression
 #all predictors are significant - p value < 0.05
@@ -655,8 +663,7 @@ fit.summary<- broom::tidy(fit)%>%kable(
 #3B
 anova.fit<- broom::tidy(anova(fit))%>%kable(digits = c(0, 4, 4, 4, 4),
             align = c("l", "r", "r", "r", "r", "r"))%>%kable_styling()%>%footnote(general_title = "ANOVA",
-             general = "Table 3")
-
+             general = "Table 4")
 
 #ANOVA table containing SSE and SSR
 #SSR = SS(LNBELPOV100) + SS(PCTBACHMOR) +SS(PCTVACANTS) + SS(PCTSINGLES) = 
@@ -690,6 +697,7 @@ ResidualPlot<- ggplot(ourdata, aes(x = predvals, y= stdres))+
 
 ```{r summary.anova, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
 fit.summary
+fit.stats
 anova.fit
 
 ```
