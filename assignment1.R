@@ -382,7 +382,14 @@ ResidualPlot<- ggplot(ourdata, aes(x = predvals, y= stdres))+
                   geom_hline(yintercept=0, size = .5)+
                   labs(x = 'Predicted Median House Value ($)', 
                        y = 'Standardized Residuals')
+stdr.reshist <- histogram( ~ stdres,data = ourdata, 
+                         main='Standardized Regression Residuals Histogram', 
+                         sub= 'Figure 4', 
+                         col="#B3CDE3", 
+                         breaks = 50, 
+                         scales='free')  
 
+stdr.reshist
 #----Step 4 ----
 #use step and step$anova commands in the MASS library to run stepwise
 #regression and determine the best model based on the Akaike Information
@@ -391,9 +398,14 @@ ResidualPlot<- ggplot(ourdata, aes(x = predvals, y= stdres))+
 step <- stepAIC(fit, direction="both")
 
 
-# Save output of step$anova for markdown!
-step$anova
 
+# Save output of step$anova for markdown!
+stepoutput <- step$anova
+
+steptable<- kbl(stepoutput)%>%
+              kable_material
+
+steptable
 #----Step 5 ----
 
 #In the output: 
