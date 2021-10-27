@@ -552,3 +552,164 @@ stdres_maps_both <- plot_grid( choro_stdresclass,
                             ncol = 2, nrow = 1)
 
 stdres_maps_both
+
+
+
+##### if we need this I have i there: 
+
+
+
+
+
+```{r stdresANDmap.code, echo=FALSE, warning=FALSE, message=FALSE, results='hide', include =FALSE}
+
+#In the output: 
+#Predicted (Predicted values using all observations) 
+#cvpred (cross-validation predictions)
+#CV residual = y (in this case, MEDHHINC) - cvpred
+cv <- CVlm(data=ourdata, fit, m=5)				       
+#Extracting MSEs
+mse <- attr(cv, "ms")
+mse
+rmse <- sqrt(mse)						 
+rmse
+
+#CROSS-VALIDATION
+#Model 2
+fit2 <- lm(LNMEDHVAL ~ MEDHHINC + PCTVACANT , data=ourdata)
+summary(fit2)
+anova(fit2)
+
+#Model
+#fit <- lm(MEDHHINC ~ PCTVACANT + MEDHVAL + PCTSINGLES, data=ourdata)
+#summary(fit)
+#anova(fit)
+cv2 <- CVlm(data=ourdata, fit2, m=5)				        
+
+#Extracting MSEs
+
+mse2 <- attr(cv2, "ms")
+mse2
+rmse2 <- sqrt(mse2)					                    
+rmse2
+
+#----Step 6 ----
+#new column saving predicted values 
+ourdata$predvals2 <- fitted(fit2)
+#adding to geom too for mapping
+ourdata_geom$predvals2 <- fitted(fit2)
+ourdata_geom$predvals <- fitted(fit) #### from our first model
+
+
+#new column saving residuals
+ourdata$resids2 <- residuals(fit2)
+#adding to geom too for mapping
+ourdata_geom$resids2 <- residuals(fit2)
+ourdata_geom$resids <- residuals(fit) #### from our first model
+
+#New column saving standardized residuals
+ourdata$stdres2 <- rstandard(fit2)
+#adding to geom too for mapping
+ourdata_geom$stdres2 <- rstandard(fit2)
+ourdata_geom$stdres <- rstandard(fit)#### from our first model
+
+
+#### I'm not sure we need this scatter plot -- BRi
+# Create a scatterplot with standardized residuals on Y axis and
+# Predicted Values on x axis. 
+
+#ResidualPlot2<- ggplot(ourdata, aes(x = predvals2, y= stdres2))+
+#  geom_point(size=1.5, color = 'darkslateblue', alpha = .5)+
+#  geom_hline(yintercept=0, size = .5)+
+#  labs(x = 'Predicted Median House Value ($)', 
+#       y = 'Standardized Residuals')
+#ResidualPlot2
+
+
+#### we do need this Histogram though right?--- Bri #########
+
+#Residhists <- histogram( ~ stdres +stdres2,layout=c(2,1),data = ourdata, 
+#                      main='Standardized Regression Residuals From Both Models', #xlab='regressing on all variables (LEFT) and regressing on only income and vacancy (RIGHT)', sub= 'Figure 3', col="#B3CDE3", breaks = 50, scales='free')  
+
+#Residhists
+
+##############
+#getting Jenks Breaks for LNMEDHVAL 
+standres2classes <- classIntervals(ourdata_geom$stdres2, n = 5, style = "jenks")
+standres2classes$brks
+typeof(ourdata_geom$stdres2)
+
+#we'll create a new column in our sf object using the base R cut() function to cut up our percent variable into distinct groups.
+
+ourdata_geom <- ourdata_geom %>%
+  mutate(stdresclass2 = cut(stdres2, standres2classes$brks, include.lowest = T))
+
+####### Second Resid Map if we need it ###################
+choro_stdresclass2 <- ggplot() +
+  geom_sf(data = ourdata_geom,
+          aes(fill = stdresclass2),
+          alpha = 1,
+          colour = NA,
+          size = 0.15) +
+  scale_fill_brewer(palette = "PuBu",
+                    name = "LN Median House Value") +
+  labs(x = NULL, y = NULL,
+       title = "Standardized Residuals for Our Second Model\n in Philadelphia by Block Group",
+       subtitle = "Source: U.S. Census",
+       caption= "Map 4") +
+  theme(line = element_blank(),
+        axis.text = element_blank(),
+        axis.title = element_blank(),
+        panel.background = element_blank())
+
+#choro_stdresclass2
+
+##############################################################
+#### doing this for our first model's resids just in case,
+#getting Jenks Breaks for LNMEDHVAL 
+standresclasses <- classIntervals(ourdata_geom$stdres, n = 5, style = "jenks")
+standresclasses$brks
+typeof(ourdata_geom$stdres)
+
+#we'll create a new column in our sf object using the base R cut() function to cut up our percent variable into distinct groups.
+
+ourdata_geom <- ourdata_geom %>%
+  mutate(stdresclass = cut(stdres, standresclasses$brks, include.lowest = T))
+
+#mapping
+choro_stdresclass <- ggplot() +
+  geom_sf(data = ourdata_geom,
+          aes(fill = stdresclass),
+          alpha = 1,
+          colour = NA,
+          size = 0.15) +
+  scale_fill_brewer(palette = "PuBu",
+                    name = "LN Median House Value") +
+  labs(x = NULL, y = NULL,
+       title = "Standardized Residuals in Philadelphia by Block Group",
+       subtitle = "Source: U.S. Census",
+       caption= "Map 3") +
+  theme(line = element_blank(),
+        axis.text = element_blank(),
+        axis.title = element_blank(),
+        panel.background = element_blank())
+
+choro_stdresclass
+
+stdres_maps_both <- plot_grid( choro_stdresclass,
+                               choro_stdresclass2, 
+                               #labels = c("% Below Poverty (LN)", 
+                               #        "Bachelors Degree",
+                               #       "% Vacant Homes", 
+                               #      "% Single House Units"), 
+                               #label_x =-.1,
+                               #label_y = 1.01,
+                               scale= 0.9,
+                               align = 'hv',
+                               ncol = 2, nrow = 1)
+
+stdres_maps_both
+
+```
+
+

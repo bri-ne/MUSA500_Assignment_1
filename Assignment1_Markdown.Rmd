@@ -1,7 +1,7 @@
 ---
 title: "Using OLS Regression to Predict Median House Values in Philadelphia" 
-author: names 
-date: date 
+author: "Olivia Scalora, Hasa Reddy, and Briana Cervantes" 
+date: "10/22/2021"
 output: 
   html_document: 
     toc: true 
@@ -61,7 +61,7 @@ Here we examine the effect that education, poverty, housing form, and vacancies 
 
 ##### **a. Data Cleaning**
 
-Our study relies on census data, that includes observations for various demographic variables at the census block group level. We began with a data set of 1,816 observation and filtered out block groups with small populations (\<40), block groups with no housing units, and block groups with a median house value less than \$10,000. Additionally, a two separate block groups in North Philadelphia were removed due to a very high median house value(greater than \$80,000) and very low median household income (less than \$8,000). We were left with 1,720 observation to use in our analysis.
+Our study relies on census data, that includes observations for various demographic variables at the census block group level. We began with a data set of 1,816 observation and filtered out block groups with small populations (\<40), block groups with no housing units, and block groups with a median house value less than \$10,000. Additionally, a two separate block groups in North Philadelphia were removed due to a very high median house value (greater than \$80,000) and very low median household income (less than \$8,000). We were left with 1,720 observations to use in our analysis.
 
 ##### **b. Exploratory Analysis**
 
@@ -77,7 +77,7 @@ The first step we took in analyzing our data set, was to calculate summary stati
 -   Percent of residents in Block Group with at least a bachelor's
     degree (PCTBACHMOR)
 
-Doing this gives us an cursory understanding of what the values our predictors and dependent variable look like. Additionally we explored the distribution of our data through the use of histograms. With a histogram plot of the values of our variables, we can determine if they are normally distributed. This is important for determining which kind of regression we will use. Different regression models have different assumptions. Some suggest that the residuals, or the estimate of error of observations in our sample, for each variable should be normally distributed.  
+Doing this gives us a cursory understanding of what the values our predictors and dependent variable look like. Additionally, we explored the distribution of our data through the use of histograms. With a histogram plot of the values of our variables, we can determine if they are normally distributed. This is important for determining which kind of regression we will use. Different regression models have different assumptions. Some suggest that the residuals, or the estimate of error of observations in our sample, for each variable should be normally distributed.  
 
 It is possible for a non-normally distributed variable to have normally distributed values, but it's much more likely that if the variable is not normally distributed neither will its residuals. However, Central Limit Theorem suggests that if you have enough observations, then the normality of your variable or its residuals shouldn't matter. In any case we are interested in exploring whether or not our variables are distributed, so in the case that they are not, we can transform them and preserve the assumptions of the regression we use. That is our intention because we hope to make an interpretable model and having normally distributed variables, and by extension residuals, our model will be easier to interpret.  
 
@@ -129,7 +129,7 @@ All of our variables have a standard deviation that’s close to or greater than
 
 The distribution of our raw variables are shown in Figure 1. We thought it wise to also illustrate the distribution of the natural log of all our variables, as shown in Figure 2. From these visualizations, it was clear that both the dependent variable and NBELPOV were not normally distributed, and as a result were likely not great for our linear regression. A linear regression model assumes that the residuals, or the estimate of error of observations in our sample, for each variable is normally distributed. And while it is possible for a variable with non-normal distribution to have normally distributed residuals, it is more likely that that variables with non-normal distributions also have non-normally distributed residuals. If it were the case that the residuals of our variables were not normally distributed, then we would be in violation of the assumption of linear regression. Though there is a case to be made, that we meet the criteria of Central Limit Theorem, based on the amount of observations we have, we have decided to address to non-normally distributed variables, so that we can confidently perform statistically hypothesis testing with our model.
 
-With this motivation, we concluded that it would be best to use the natural logged dependent variable and NBELPOV. Additionally we chose to use a natural log (and a natural log +1, where there were zeros in the observations), because those two variables were positively skewed. We used the raw versions of the remaining variables.
+With this motivation, we concluded that it would be best to use the natural logged dependent variable and NBELPOV. Additionally we chose to use a natural log (and a natural log +1, where there were zeros in the observations), because those two variables were positively skewed. We used the raw versions of the remaining variables. We will make more regression assumption checks further in this document.
 
 ```{r summarydist_code, include=TRUE, results='hide', echo=FALSE, warning=FALSE, message=FALSE}
 
@@ -217,28 +217,7 @@ LNhists
 
 We next test the relationship between our predictor variables using a correlation measure to make sure our model is free of multicollinearity. In Table 1 below, you'll notice that each predictor's correlation with itself is 1. But none of our predictor variables have a correlation with another \> 0.8 or \<-0.8, so our model will be free from multicollinearity.The other regression assumptions will be explored in the Regression Assumption Checks section below. 
 
-```{r corr_code_output, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
-
-#### THIS CHUNK INCLUDE CORR CODE AND OUTPUT 
-#---- Step 1C: Pearson Correlations ----
-#make new df that just has our predictors and dependent variable
-
-pred_var <- ourdata%>%dplyr::select(LNMEDHVAL, LNBELPOV100, PCTBACHMOR, PCTSINGLES, PCTVACANT)
-pcorr <- cor(pred_var, method="pearson")
-
-#Observe that there isnt severe multicollinearity (i.e., no correlations where
-# r>.8 or r<-.8), so we can include all four predictors in the regression.
-
-#*********matrix for markdown*****************************************
-pcorr <- pcorr%>%kable(digits = c(4, 4, 4, 4, 4),
-            align = c("l", "r", "r", "r", "r"))%>%kable_styling()%>%footnote(general_title = "Pearson's Correlation of Predictors",
-             general = "Table 1")
-
-
-pcorr
-```
-
-One last thing we looked at in our exploration of our data, is the distribution of our predictor's values across space. Below are a series of maps that show this distribution, with values broken out by Jenks breaks. Map 1 shows us how our dependent variable, median house value, differs across block group, and Map 2 show our predictors variables across tracts. Most have 5 breaks, but the values for LN %BELPOV were note varied enough so we there are only three breaks.
+Next, we looked at in our exploration of our data is the distribution of our predictor’s values across space. Below are a series of maps that show this distribution, with values broken out by Jenks breaks. Map 1 shows us how our dependent variable, LN Median House Value, differs across census tract, and Map 2 shows our predictors variables across tracts. Most have 5 breaks, but the values for LN %BELPOV were note varied enough so we included only three breaks. 
 
 ```{r choropleth_code, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE, results='hide'}
 
@@ -393,13 +372,41 @@ mapgrid <- plot_grid( choro_PctVac,
 
 ```
 
-```{r maps_output, include=TRUE, echo=FALSE, fig.dim=c(10,12), warning=FALSE, message=FALSE}
+```{r maps_output, include=TRUE, echo=FALSE, fig.dim=c(10,8), warning=FALSE, message=FALSE}
 
 choro_LNMEDHVAL
 mapgrid
 ```
 
-The map of the percent individuals with a Bachelors or higher looks the most similar to our dependent variable, while the percent of households living in poverty looks almost the opposite. It also appears as though where there are people with at least Bachelors, there are also single house units and house value is higher.
+
+
+The map of the percentage of houses that are vacant looks like the negative version of the map our dependent variable, LN of medial house value. Logically, that makes sense. Where houses are vacant, the value is low – a clear relationship. This strong relationship will not be a problem for our model, since it is between the dependent variable and a predictor.  
+
+On the other hand, the map of the percentage of individuals with a bachelor's or higher looks the most like our dependent variable, while the percentage of households living in poverty looks almost the opposite. It also appears as though where there are people with at least Bachelors, there are also single house units and house value is higher. Because of this it might be the case that our bachelor's variable is somewhat, if not strongly, correlated with our poverty variables, in a negative direction. This does agree with the ideas we started this analysis with, I.e., the less means you have the less likely you might be to complete college and the less likely you will own an expensive house. These are of course generalizations, and we must note that our model cannot predict the characteristics of any one person’s life. The most our model can do is illuminate trends. Our next step is to identify whether the relationship between our predictors such as our poverty and bachelor’s variables will be an issue for the assumptions of our model. More on this below.  
+
+```{r corr_code_output, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+
+#### THIS CHUNK INCLUDE CORR CODE AND OUTPUT 
+#---- Step 1C: Pearson Correlations ----
+#make new df that just has our predictors and dependent variable
+
+pred_var <- ourdata%>%dplyr::select(LNMEDHVAL, LNBELPOV100, PCTBACHMOR, PCTSINGLES, PCTVACANT)
+pcorr <- cor(pred_var, method="pearson")
+
+#Observe that there isnt severe multicollinearity (i.e., no correlations where
+# r>.8 or r<-.8), so we can include all four predictors in the regression.
+
+#*********matrix for markdown*****************************************
+pcorr <- pcorr%>%kable(digits = c(4, 4, 4, 4, 4),
+            align = c("l", "r", "r", "r", "r"))%>%kable_styling()%>%footnote(general_title = "Pearson's Correlation of Predictors",
+             general = "Table 2")
+
+
+pcorr
+```
+
+In our correlation matrix, shown in Table 2, we can see that the variables that have the greatest correlation are in fact the percentage of the population with a bachelor's degree or more and our dependent variable, LNMEDHVAL. That is a relationship we were able to spot in comparing the maps of those two variables and one that is welcome in our model. As is the next strongest relationship between the dependent variable and our predictor, percentage of vacant houses. The relationship we spotted between poverty and education in our maps is shown to be one of the strongest between all our variables, but with an **r** of –0.3198, we will not be in violation of any assumptions of our regression. In fact, none of variable matchups produce an **r** greater than 0.8 or less than –0.8, so we are clear to continue with using every variable.   
+
 
 ##### **b. Regression Results**
 
@@ -425,17 +432,20 @@ A over half of the variance in the dependent variable is explained by the model 
 #fit <- lm(MEDHVAL ~ LNBELPOV100 + PCTBACHMOR + PCTVACANT + PCTSINGLES, data=ourdata)
 fit <- lm(LNMEDHVAL ~ LNBELPOV100 + PCTBACHMOR + PCTVACANT + PCTSINGLES, data=ourdata)
 
-summary(fit)
+sum<-summary(fit)
 #3A
 
 fit.summary<- broom::tidy(fit)%>%
               kable(
               align = c("l", "r", "r", "r", "r"))%>%kable_styling()%>%footnote(general_title = "Regression Summary",
-              general = "Table 2")
+              general = "Table 3")
 
 #displays the summary statistics and R squared
-fit.stats<- glance(fit)%>%kable()%>%kable_styling()%>%footnote(general_title = "Regression Summary",
-              general = "Table 3")
+fit.stats<- glance(fit)%>%kable(col.names= c("r.squared", "adj.r.squared", "sigma", "f.statistic", "p.value", "df", "logLik", "AIC", "BIC", "deviance", "df.residual", "nobs"))%>%kable_styling()%>%footnote(general_title = "Regression Summary",
+              general = "Table 4")
+
+
+
 
 #Summary of Regression
 #all predictors are significant - p value < 0.05
@@ -449,7 +459,7 @@ fit.stats<- glance(fit)%>%kable()%>%kable_styling()%>%footnote(general_title = "
 #3B
 anova.fit<- broom::tidy(anova(fit))%>%kable(digits = c(0, 4, 4, 4, 4),
             align = c("l", "r", "r", "r", "r", "r"))%>%kable_styling()%>%footnote(general_title = "ANOVA",
-             general = "Table 4")
+             general = "Table 5")
 
 #ANOVA table containing SSE and SSR
 #SSR = SS(LNBELPOV100) + SS(PCTBACHMOR) +SS(PCTVACANTS) + SS(PCTSINGLES) = 
@@ -491,7 +501,7 @@ anova.fit
 
 This section will talk about testing model assumptions and aptness. The histograms of the variable distributions were presented earlier in the exploratory results section. Here, we will be checking to see if the assumption of a linear relationship between out dependent variable, LNMEDHVAL, and each of its predictors holds true. The scatter plots in Figure 3 display the relationship between each predictor and the natural log of median house value. As we can see from the scatter plots, PCTBACHMORE and LNMEDHVAL appear to have what most resembles a linear relationship, however the other scatter plots do not appear to be exactly linear. While this doesn't quite meet our first assumption, there is no strong polynomial relationship and for our case, a linear model would be the best fit through these observations. 
 
-```{r scatter_code, message=FALSE, echo=FALSE, results='hide', warning=TRUE, include=FALSE}
+```{r scatter_code, message=FALSE, echo=FALSE, results='hide', warning=TRUE, include=FALSE, fig.width=8, fig.height=12}
 
 #### THIS CHUNK INCLUDE SCATTER PLOT CODE ####
 
@@ -521,7 +531,7 @@ scattergrid <- plot_grid(
            pBach, 
            pVac, 
            pSing, 
-           labels = c("% Below Poverty (LN)", 
+           labels = c("Below Poverty (LN)", 
                       "Bachelors Degree",
                       "% Vacant Homes", 
                       "% Single House Units"),
@@ -554,9 +564,9 @@ stdr.reshist <-  histogram( ~ stdres,data = ourdata,
 stdr.reshist
 ```
 
-The third assumption we will check for in our regression model is homoscedasticity of residuals. homoscedasticity refers to the randomness of variance in residuals regardless of the values of each x and indicates accuracy of model prediction. Figure 5 displays the relationship between the standardized residuals and the predicted median house value from our model in a scatter plot. Our model appears to meet the assumption of homoscedasticity because the variance residuals are largely random. There is no pattern in the residuals that would indicate systematic over or under prediction. Using standardized residuals while checking for homoscedasticity will also reveal outlier observations in the data set. 
+The third assumption we will check for in our regression model is homoscedasticity of residuals. homoscedasticity refers to the randomness of variance in residuals regardless of the values of each x and indicates accuracy of model prediction. Figure 5 displays the relationship between the standardized residuals and the predicted median house value from our model in a scatter plot. Standardized residuals are our raw residuals divided by the standard error of estimate. Our model appears to meet the assumption of homoscedasticity because the variance residuals are largely random. There is no pattern in the residuals that would indicate systematic over or under prediction. Using standardized residuals while checking for homoscedasticity will also reveal outlier observations in the data set. 
 
-```{r residplot, include=TRUE, echo=FALSE, message=FALSE, warning=FALSE}
+```{r residplot, include=TRUE, echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=10}
 
 ResidualPlot<- ggplot(ourdata, aes(x = predvals, y= stdres))+
                   geom_point(size=1.5, color = 'darkslateblue', alpha = .5)+
@@ -570,7 +580,7 @@ ResidualPlot
 
 We next make the assumption that our predictors are not spatially autocorrelated. Earlier in the report, under the exploratory results section, we plotted each predictor by census tract to see of how each of the predictors related to itself in space. All of the predictors, according to the choropleth maps, show clustering in space. This breaks our regression model's assumption of lack of spatial autocorrelation. This is not surprising as we would expect, in alignment with Tobler's first law of geometry, that nearer things are more related than distant things. For example, one census block group adjacent to another block group with high percentage of vacant homes, is more likely to also have a high percentage of vacant homes than not. The same can be applied to our other predictors as well. Wealth and poverty and their associated attributes will cluster around themselves. Map 3 presents a choropleth map of the standardized residuals by census block group. Here we observe a less obvious pattern of clustering. While the north and center of Philadelphia have some clustering of negative residual values, the standardized residuals appear to have a more random spatial pattern overall, as compared to the predictor value chlorpleth maps previously discussed.  
 
-```{r stdres.code, echo=FALSE, warning=FALSE, message=FALSE, results='hide', include =FALSE}
+```{r stdresANDmap.code, echo=FALSE, warning=FALSE, message=FALSE, results='hide', include =FALSE}
 
 #In the output: 
 #Predicted (Predicted values using all observations) 
@@ -579,15 +589,15 @@ We next make the assumption that our predictors are not spatially autocorrelated
 cv <- CVlm(data=ourdata, fit, m=5)				       
 #Extracting MSEs
 mse <- attr(cv, "ms")
-mse
+
 rmse <- sqrt(mse)						 
-rmse
+
 
 #CROSS-VALIDATION
 #Model 2
 fit2 <- lm(LNMEDHVAL ~ MEDHHINC + PCTVACANT , data=ourdata)
-summary(fit2)
-anova(fit2)
+
+
 
 #Model
 #fit <- lm(MEDHHINC ~ PCTVACANT + MEDHVAL + PCTSINGLES, data=ourdata)
@@ -598,9 +608,9 @@ cv2 <- CVlm(data=ourdata, fit2, m=5)
 #Extracting MSEs
 
 mse2 <- attr(cv2, "ms")
-mse2
+
 rmse2 <- sqrt(mse2)					                    
-rmse2
+
 
 #----Step 6 ----
 #new column saving predicted values 
@@ -623,25 +633,10 @@ ourdata_geom$stdres2 <- rstandard(fit2)
 ourdata_geom$stdres <- rstandard(fit)#### from our first model
  
 
-#### I'm not sure we need this scatter plot -- BRi
-# Create a scatterplot with standardized residuals on Y axis and
-# Predicted Values on x axis. 
-
-ResidualPlot2<- ggplot(ourdata, aes(x = predvals2, y= stdres2))+
-  geom_point(size=1.5, color = 'darkslateblue', alpha = .5)+
-  geom_hline(yintercept=0, size = .5)+
-  labs(x = 'Predicted Median House Value ($)', 
-       y = 'Standardized Residuals')
-ResidualPlot2
 
 
-#### we do need this Histogram thought --- Bri
 
-Residhists <- histogram( ~ stdres +stdres2,layout=c(2,1),data = ourdata, 
-                      main='Standardized Regression Residuals From Both Models', xlab='regressing on all variables (LEFT) and regressing on only income and vacancy (RIGHT)', sub= 'Figure 3', col="#B3CDE3", breaks = 50, scales='free')  
-
-Residhists
-
+##############
 #getting Jenks Breaks for LNMEDHVAL 
 standres2classes <- classIntervals(ourdata_geom$stdres2, n = 5, style = "jenks")
 standres2classes$brks
@@ -652,26 +647,9 @@ typeof(ourdata_geom$stdres2)
 ourdata_geom <- ourdata_geom %>%
   mutate(stdresclass2 = cut(stdres2, standres2classes$brks, include.lowest = T))
 
-#mapping
-choro_stdresclass2 <- ggplot() +
-  geom_sf(data = ourdata_geom,
-          aes(fill = stdresclass2),
-          alpha = 1,
-          colour = NA,
-          size = 0.15) +
-  scale_fill_brewer(palette = "PuBu",
-                    name = "LN Median House Value") +
-  labs(x = NULL, y = NULL,
-       title = "Standardized Residuals for Our Second Model\n in Philadelphia by Block Group",
-       subtitle = "Source: U.S. Census",
-       caption= "Map 4") +
-  theme(line = element_blank(),
-        axis.text = element_blank(),
-        axis.title = element_blank(),
-        panel.background = element_blank())
 
-choro_stdresclass2
 
+##############################################################
 #### doing this for our first model's resids just in case,
 #getting Jenks Breaks for LNMEDHVAL 
 standresclasses <- classIntervals(ourdata_geom$stdres, n = 5, style = "jenks")
@@ -701,23 +679,13 @@ choro_stdresclass <- ggplot() +
         axis.title = element_blank(),
         panel.background = element_blank())
 
-choro_stdresclass
 
-stdres_maps_both <- plot_grid( choro_stdresclass,
-                               choro_stdresclass2, 
-                              #labels = c("% Below Poverty (LN)", 
-                               #        "Bachelors Degree",
-                                #       "% Vacant Homes", 
-                                 #      "% Single House Units"), 
-                            #label_x =-.1,
-                            #label_y = 1.01,
-                            scale= 0.9,
-                            align = 'hv',
-                            ncol = 2, nrow = 1)
 
-stdres_maps_both
 
 ```
+
+
+
 
 ```{r stdres.map, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
 choro_stdresclass
@@ -743,9 +711,11 @@ steptable<- kbl(stepoutput)%>%
 
 ```{r step.output.AIC, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
 steptable
+
+
 ```
 
-```{r kfold.cv, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE, results='hide'}
+```{r kfold.cv, include=FALSE, echo=FALSE, warning=FALSE, message=FALSE, results='hide'}
 #In the output: 
 #Predicted (Predicted values using all observations) 
 #cvpred (cross-validation predictions)
@@ -753,15 +723,15 @@ steptable
 cv <- CVlm(data=ourdata, fit, m=5)				       
 #Extracting MSEs
 mse <- attr(cv, "ms")
-mse
+
+
+
 rmse <- sqrt(mse)						 
-rmse
+
 
 #CROSS-VALIDATION
 #Model 2
 fit2 <- lm(LNMEDHVAL ~ MEDHHINC + PCTVACANT , data=ourdata)
-summary(fit2)
-anova(fit2)
 
 #Model
 #fit <- lm(MEDHHINC ~ PCTVACANT + MEDHVAL + PCTSINGLES, data=ourdata)
@@ -772,20 +742,68 @@ cv2 <- CVlm(data=ourdata, fit2, m=5)
 #Extracting MSEs
 
 mse2 <- attr(cv2, "ms")
-mse2
+
 rmse2 <- sqrt(mse2)					                    
-rmse2
+
+
+
+#### PREPPING TABLES
+
+fit2.summary<- broom::tidy(fit2)%>%
+              kable(
+              align = c("l", "r", "r", "r", "r"))%>%kable_styling()%>%footnote(general_title = "Regression Summary",
+              general = "Table 6")
+
+#displays the summary statistics and R squared
+fit2.stats<- glance(fit2)%>%kable(col.names= c("r.squared", "adj.r.squared", "sigma", "f-statistic", "p.value", "df", "logLik", "AIC", "BIC", "deviance", "df.residual", "nobs"))%>%kable_styling()%>%footnote(general_title = "Regression Summary",
+              general = "Table 7")
+
+anova.fit2<- broom::tidy(anova(fit2))%>%kable(digits = c(0, 4, 4, 4, 4),
+            align = c("l", "r", "r", "r", "r", "r"))%>%kable_styling()%>%footnote(general_title = "ANOVA",
+             general = "Table 8")
+
+
+#### making mse table 
+
+mse.table <- matrix(as.numeric(list(mse,mse2,rmse,rmse2)), ncol=2)
+colnames(mse.table) <- c('mse', 'rmse')
+rownames(mse.table) <- c('regression.1 (4 vars)', 'regression.2 (2 vars)')
+mse.table%>%as.numeric()
+
+
+
+mse.tableK <- mse.table%>%kable(digits=c(5,5))%>%kable_styling( full_width=F)%>%
+  footnote(general_title = "Errors For Both Regressions",
+           general = "Table 9")
+```
+
+
+
+
+
+```{r fold.cv.summary.anova.output, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
+
+
+
+
+# comparing fit
+fit2.summary
+fit2.stats
+anova.fit2
+mse.tableK
+
 
 ```
+
 
 ### **Limitations & Conclusion**
 
 In this study we set out to investigate to what extent median house value is a factor of various neighborhood characteristics, and which characteristics were more powerful than others. As a result, in our first model that used four predictors we saw that education was the greatest factor, more specifically the percentage of people in a block group with at least a bachelor’s degree. This variable alone had a **r** of 0.7357, meaning it was positively correlated with median house value. In other words, as the percentage of people with at least a bachelor’s degree increases, so does house value.  This isn’t very surprising given the ideas we laid out in the introduction. Higher education in the United States often requires a lot of financial resources and typically, those with college degree receive greater incomes. Thus, it’s not surprising that where there are college graduates, there are also higher home values.   
 
-Our first model, that uses the natural log of the number of people living below the poverty line, the percentage of people with at least a bachelor’s degree, the percentage of vacant house unity, and the percentage of single house units, does yield the best model given our predictors. When investigating the influence our predictors had on median house value, we saw that our f-statistic was associated with a very low p-value **(put the pvalue here)** , meaning that our model held some promise and that at least one of our predictors had significant influence on our dependent value. Further investigation using stepwise regression informed us that in fact every one of our predictors was useful in predicting median house value. Additionally, we wanted to verify that our four predictors were worth keeping, so we built a model using only two variables: percentage of vacant units and median household value. On both the four and two predictor models, we ran a cross-validation, then we compared the root mean squared error. **[insert Hasa’s findings here.]**
+Our first model, that uses the natural log of the number of people living below the poverty line, the percentage of people with at least a bachelor’s degree, the percentage of vacant house unity, and the percentage of single house units, does yield the best model given our predictors. When investigating the influence our predictors had on median house value, we saw that our f-statistic was associated with a very low p-value <0.0000000000000002, meaning that our model held some promise and that at least one of our predictors had significant influence on our dependent value. Further investigation using stepwise regression informed us that in fact every one of our predictors was useful in predicting median house value. Additionally, we wanted to verify that our four predictors were worth keeping, so we built a model using only two variables: percentage of vacant units and median household value. On both the four and two predictor models, we ran a cross-validation, then we compared the root mean squared error. **[insert Hasa’s findings here.]**
 
 If we were to bring in new variables it might be interesting to look at the effect that greenspace, specifically tree presence, had on median house value. It’s our assumption that greenspace and trees are often found in areas with higher incomes and in areas that have been greatly influenced by historic red lining practices. Similarly, it would be interesting to incorporate historical red lining boundaries to investigate the effects they have on median house value.  
 
-While our model is strong, we must acknowledge that our model does not account at all for spatial autocorrelation. We can see in Maps 3 and 4 that the spatial distribution of our standardized residuals appear to be clustered. What this means for our model is that we are missing a variable to account for the spatial influence on median house value. Therefore, without adding such a variable our model will never be as accurate as one that does account for this. Additionally, we d 
+While our model is strong, we must acknowledge that our model does not account at all for spatial autocorrelation. We can see in Maps 3 and 4 that the spatial distribution of our standardized residuals appear to be clustered. What this means for our model is that we are missing a variable to account for the spatial influence on median house value. Therefore, without adding such a variable our model will never be as accurate as one that does account for this.
 
 Additionally, we must note that our poverty variable, the number of people living below the poverty line, is a raw number. Some might say that that poses its own limitation on our model. We are not so sure. It is a fair criticism to say that the raw number does not supply context for how many people live in the block group. And as a result, we lack the information to correctly picture the effect that **density** of poverty in a block group has on median house value. Nevertheless, we think that due to the nature of what our poverty variable represents –I.e., the conditions of real human life – we think it helpful to make an economic case for addressing poverty. In other words, if we can show, as we did, that the greater number of persons in poverty (no matter the density), negatively affects median house value, then that might supply an economic, rather than a moral, argument for addressing poverty. The important link here is that, as we addressed in the introduction, many local governments rely on property taxes to fund their budgets. The higher the value of the home, the higher the house prices and possibly the greater the local government budget is. While we strive to incorporate the most stringent statistically analysis, we must acknowledge that statistics as a field is as much an art as it is a science.  
