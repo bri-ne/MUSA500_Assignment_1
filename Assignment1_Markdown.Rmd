@@ -104,10 +104,21 @@ SSE = \sum_{i=1}^{n} \epsilon^2 = \sum_{i=1}^{n} (y-\hat{y})^2
 $$
 Variance is the other parameter that needs to be estimated in multiple regression, calculated as $σ^2=\frac{SSE}{(n-(k+1))}=MSE$ , where k = number of predictors, n = number of observations, and MSE stands Mean Squared Error. In multiple regression, R^2^ is the coefficient of multiple determination, or the proportion of variance in the model explained by all k predictors, represented by the equation $R^2=1-\frac{SSE}{SST}$ . The R^2^ will increase with more predictors in the model and can be adjusted for the number of predictors with the equation $R_{adj}^2=\frac{(n-1) R^2-k}{n-(k+1)}$ The model utility test, F-ratio, is conducted on the regression model to determine a goodness of fit measure. It can be interpreted as a significance test for R^2^. The F-ratio tests the null hypothesis, H~0~ that all coefficients in the model are jointly zero, vs the alternative hypothesis Ha that at least one of the coefficients is not 0. Said differently, we test to make sure none of the independent variables is a significant predictor o the dependent variable. From the F-ratio we are looking for a P value that is less than 0.05. Once an F-ratio is determined, we run a T-test on every individual predictor. The null hypothesis states that the predictor (ie; Percentage of vacant homes) has no association with the dependent variable, once again in our case is median house value. Our goal is to reject the null hypothesis H~0~ in favor of the alternative hypothesis H~a~ which is Β~i~ ≠ 0 for each predictor.
 
-
 ##### **d. Additional Analysis**
 
---
+One of the methods uses is the Stepwise regression is the step-by-step iterative creation of a regression version that includes the choice of impartial variables for use in a very last version. It includes including or getting rid of capability explanatory variables in succession and checking out for statistical importance after every iteration. The foremost drawbacks of stepwise more than one regression consist of bias in parameter estimation, inconsistencies amongst version choice algorithms, an inherent (however regularly overlooked) trouble of more than one speculation testing, and an irrelevant consciousness or reliance on a unmarried high-quality version.  One of the other limitations of stepwise regression model is that has now no longer been emphasised is that stepwise estimates aren't invariant to inconsequential linear transformations.  
+$$ 
+{b}_{j.std} = {b}_{j}({Sx}_{j}/{Sy}) 
+$$
+
+Where Sy and Sxj are the standard deviations for the dependent variable and the corresponding jth independent variable
+
+Cross-validation is a re sampling technique used to evaluate machine learning models on a limited data sample. The technique has a single parameter known as k that refers back to the wide variety of agencies that a given statistics pattern is to be split into. As such, the technique is frequently known as k-fold cross-validation. When a particular value for k is chosen, it is able to be utilized in location of k within side the connection with the version, which include k=5 turning into 5-fold cross-validation. Cross-validation is usually utilised in applied machine learning to estimate the ability of a system getting to know version on unseen statistics. That is, to apply a confined pattern for you to estimate how the version is predicted to carry out in popular whilst used to make predictions on statistics now no longer used for the duration of the education of the version. The method is commonly used as it is straightforward to recognise and as it outcomes are much less biased or much less positive estimate of the version ability than different methods. 
+
+$$ 
+CV(λ)= 1/k\sum_{k=1}^{k} E_{k}(λ)
+$$
+Root Mean Square Error (RMSE) is a standard deviation of the residuals (prediction errors). Residuals are a measure to know how far from the regression line data points are; RMSE is a measure to unfold out those residuals are. In different words, it tells the concentration of the data around the line and its best fit. RMSE is a usually used for climatology, forecasting, and regression analysis to verify experimental results. 
 
 ### **Results**
 
@@ -795,6 +806,8 @@ mse.tableK
 
 ```
 
+All the three predictors are kept that means the original models built for preceptors is best models since it has the lowest AIC.
+The RMSE for the 4 predictor is 0.366 and the RMSE for the 2 predictor (Percent vacant and Median Household Income) is 0.443. Since the 4 predictor RMSE is lower than the 2 predictor RMSE, the original model is the best.
 
 ### **Limitations & Conclusion**
 
