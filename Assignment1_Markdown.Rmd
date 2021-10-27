@@ -704,6 +704,9 @@ choro_stdresclass
 
 ##### **d. Additional Models**
 
+All the three predictors are kept that means the original models built for preceptors is best models since it has the lowest AIC.
+The RMSE for the 4 predictor is 0.366 and the RMSE for the 2 predictor (Percent vacant and Median Household Income) is 0.443. Since the 4 predictor RMSE is lower than the 2 predictor RMSE, the original model is the best.
+
 ```{r stepwise, echo=FALSE, warning=FALSE, message=FALSE, results='hide', include =FALSE}
 #use step and step$anova commands in the MASS library to run stepwise
 #regression and determine the best model based on the Akaike Information
@@ -806,14 +809,13 @@ mse.tableK
 
 ```
 
-All the three predictors are kept that means the original models built for preceptors is best models since it has the lowest AIC.
-The RMSE for the 4 predictor is 0.366 and the RMSE for the 2 predictor (Percent vacant and Median Household Income) is 0.443. Since the 4 predictor RMSE is lower than the 2 predictor RMSE, the original model is the best.
+
 
 ### **Limitations & Conclusion**
 
 In this study we set out to investigate to what extent median house value is a factor of various neighborhood characteristics, and which characteristics were more powerful than others. As a result, in our first model that used four predictors we saw that education was the greatest factor, more specifically the percentage of people in a block group with at least a bachelor’s degree. This variable alone had a **r** of 0.7357, meaning it was positively correlated with median house value. In other words, as the percentage of people with at least a bachelor’s degree increases, so does house value.  This isn’t very surprising given the ideas we laid out in the introduction. Higher education in the United States often requires a lot of financial resources and typically, those with college degree receive greater incomes. Thus, it’s not surprising that where there are college graduates, there are also higher home values.   
 
-Our first model, that uses the natural log of the number of people living below the poverty line, the percentage of people with at least a bachelor’s degree, the percentage of vacant house unity, and the percentage of single house units, does yield the best model given our predictors. When investigating the influence our predictors had on median house value, we saw that our f-statistic was associated with a very low p-value <0.0000000000000002, meaning that our model held some promise and that at least one of our predictors had significant influence on our dependent value. Further investigation using stepwise regression informed us that in fact every one of our predictors was useful in predicting median house value. Additionally, we wanted to verify that our four predictors were worth keeping, so we built a model using only two variables: percentage of vacant units and median household value. On both the four and two predictor models, we ran a cross-validation, then we compared the root mean squared error. **[insert Hasa’s findings here.]**
+Our first model, that uses the natural log of the number of people living below the poverty line, the percentage of people with at least a bachelor’s degree, the percentage of vacant house unity, and the percentage of single house units, does yield the best model given our predictors. When investigating the influence our predictors had on median house value, we saw that our f-statistic was associated with a very low p-value <0.0000000000000002, meaning that our model held some promise and that at least one of our predictors had significant influence on our dependent value. Further investigation using stepwise regression informed us that in fact every one of our predictors was useful in predicting median house value. Additionally, we wanted to verify that our four predictors were worth keeping, so we built a model using only two variables: percentage of vacant units and median household value. On both the four and two predictor models, we ran a cross-validation, then we compared the root mean squared error. From our findings, we saw that our first regression had a lower root mean squared error, showing that our first model with four predictor variables was more powerful. 
 
 If we were to bring in new variables it might be interesting to look at the effect that greenspace, specifically tree presence, had on median house value. It’s our assumption that greenspace and trees are often found in areas with higher incomes and in areas that have been greatly influenced by historic red lining practices. Similarly, it would be interesting to incorporate historical red lining boundaries to investigate the effects they have on median house value.  
 
