@@ -164,18 +164,19 @@ variables. OLS multiple regression determines the strength and direction
 (positive, negative, zero) of the relationship, and goodness of model
 fit. We calculate the coefficient 𝛽i of each predictor which is
 interpreted as the amount by which the dependent variable, in our case
-median house value, changes as the independent variable increases by one
-unit, holding all other predictors constant. The model includes the
-error term 𝜀, and is defined, for each observation i, as the vertical
-distance from the observed value and the predicted value of y. The error
-term is included in the equation to allow a point to fall either above
-or below the regression line. We are regressing median house value on
-percentage of homes living below poverty, percentage of individuals with
-a bachelor's degree or higher, percentage of vacant homes, and
-percentage of single house units in Philadelphia. Our regression
-equation is as follows:
+the natural log of median house value, changes as the independent
+variable increases by one unit, holding all other predictors constant.
+The model includes the error term 𝜀, and is defined, for each
+observation i, as the vertical distance from the observed value and the
+predicted value of y. The error term is included in the equation to
+allow a point to fall either above or below the regression line. We are
+regressing the natural log of median house value on the natural log of
+persons living below the poverty line, percentage of individuals with a
+bachelor's degree or higher, percentage of vacant homes, and percentage
+of single house units in Philadelphia. Our regression equation is as
+follows:
 
-$$y = MEDHVAL = \beta_{0} + \beta_{1}LNBELPOV100 + \beta_{2}PCTBACHMOR + \beta_{3}PCTVACANT + \beta_{4}PCTSINGLES + \epsilon$$
+$${\small}ln(y) = MEDHVAL = \beta_{0} + \beta_{1}LNBELPOV100 + \beta_{2}PCTBACHMOR + \beta_{3}PCTVACANT + \beta_{4}PCTSINGLES + \epsilon$$
 
 OLS multiple regression models hold assumptions, the first being a
 linear relationship between x and y, which was examined via our scatter
@@ -670,7 +671,7 @@ every variable.
 After we explore our data and transform our variables as needed, the
 final regression equation is as follows:
 
-$$y = LNMEDHVAL = \beta_{0} + \beta_{1}LNBELPOV100 + \beta_{2}PCTBACHMOR + \beta_{3}PCTVACANT + \beta_{4}PCTSINGLES + \epsilon$$
+$$ln(y) = LNMEDHVAL = \beta_{0} + \beta_{1}LNBELPOV100 + \beta_{2}PCTBACHMOR + \beta_{3}PCTVACANT + \beta_{4}PCTSINGLES + \epsilon$$
 We regressed the natural log of median house value (LNMEDHVAL) on the
 natural log of the number of people living below poverty (LNBELPOV100),
 the percent of individuals with Bachelor's Degrees or higher
@@ -685,17 +686,16 @@ in the number of individuals living in poverty corresponds to a
 $(1.01^{\beta_1} - 1)*100 = (1.01^{-.079} - 1) * 100 = -0.0786 \%$
 change (i.e., a .0786% decrease) in median house value.
 
-The regression also tells us that the percent of individuals with a
-Bachelor's degree or more goes up by 2.112% when median house value goes
-up by one unit (\$1), holding all other variables constant, as shown by
-this equation:
-$(e^{\beta_2}-1)*100\% = (e^{0.0209}-1)*100\% = 2.112 \%$. The next
-coefficient will be interpreted in a similar way. A one unit increase in
-median house value corresponds with a 1.928% increase in percent of
-vacant homes, with all else constant:
+The regression also tells us that when the percent of individuals with a
+Bachelor's degree or more goes up by one unit (1%), median house value
+goes up by 2.112%, holding all other variables constant, as shown by
+this equation:$(e^{\beta_2}-1)*100\% = (e^{0.0209}-1)*100\% = 2.112 \%$.
+The next coefficient will be interpreted in a similar way. A one unit
+increase in percent of vacant homes (1%) corresponds with a 1.928%
+increase in median house value , with all else constant:
 $(e^{\beta_3}-1)*100\% = (e^{0.0191}-1)*100\% = 1.928 \%$. Lastly, the
-percent of single unit homes goes up by 0.2904% when median house value
-increases by one unit, with all else
+median house value goes up by 0.2904% when the percent of single unit
+homes increases by one unit (1%), with all else
 constant:$(e^{\beta_3}-1)*100\% = (e^{0.0029}-1)*100\% = 0.2904 \%$.
 
 The p value of less than 0.0001 for LNBELPOV100 tells us that if there
