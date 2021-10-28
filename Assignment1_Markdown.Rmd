@@ -717,7 +717,7 @@ step <- stepAIC(fit, direction="both")
 stepoutput <- step$anova
 
 steptable<- kbl(stepoutput)%>%
-              kable_material%>%footnote(general_title = "Stepwise ANOVA",general= "Table 5")
+              kable_material%>%footnote(general_title = "Stepwise ANOVA",general= "Table 6")
 ```
 
 ```{r step.output.AIC, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
@@ -763,15 +763,15 @@ rmse2 <- sqrt(mse2)
 fit2.summary<- broom::tidy(fit2)%>%
               kable(
               align = c("l", "r", "r", "r", "r"))%>%kable_styling()%>%footnote(general_title = "Regression Summary",
-              general = "Table 6")
+              general = "Table 7")
 
 #displays the summary statistics and R squared
 fit2.stats<- glance(fit2)%>%kable(col.names= c("r.squared", "adj.r.squared", "sigma", "f-statistic", "p.value", "df", "logLik", "AIC", "BIC", "deviance", "df.residual", "nobs"))%>%kable_styling()%>%footnote(general_title = "Regression Summary",
-              general = "Table 7")
+              general = "Table 8")
 
 anova.fit2<- broom::tidy(anova(fit2))%>%kable(digits = c(0, 4, 4, 4, 4),
             align = c("l", "r", "r", "r", "r", "r"))%>%kable_styling()%>%footnote(general_title = "ANOVA",
-             general = "Table 8")
+             general = "Table 9")
 
 
 #### making mse table 
@@ -785,7 +785,7 @@ mse.table%>%as.numeric()
 
 mse.tableK <- mse.table%>%kable(digits=c(5,5))%>%kable_styling( full_width=F)%>%
   footnote(general_title = "Errors For Both Regressions",
-           general = "Table 9")
+           general = "Table 10")
 ```
 
 
@@ -811,11 +811,13 @@ The RMSE for the 4 predictor is 0.366 and the RMSE for the 2 predictor (Percent 
 
 ### **Limitations & Conclusion**
 
-In this study we set out to investigate to what extent median house value is a factor of various neighborhood characteristics, and which characteristics were more powerful than others. As a result, in our first model that used four predictors we saw that education was the greatest factor, more specifically the percentage of people in a block group with at least a bachelor’s degree. This variable alone had a **r** of 0.7357, meaning it was positively correlated with median house value. In other words, as the percentage of people with at least a bachelor’s degree increases, so does house value.  This isn’t very surprising given the ideas we laid out in the introduction. Higher education in the United States often requires a lot of financial resources and typically, those with college degree receive greater incomes. Thus, it’s not surprising that where there are college graduates, there are also higher home values.   
+In this study we set out to investigate to what extent median house value is a factor of various neighborhood characteristics, and which characteristics were more powerful than others. As a result, in our first model that used four predictors we saw that education was the greatest factor, more specifically the percentage of people in a block group with at least a bachelor’s degree. This variable alone had a **r** of 0.7357, meaning it was positively correlated with median house value. In other words, as the percentage of people with at least a bachelor’s degree increases, so does house value.  This isn’t very surprising given the ideas we laid out in the introduction. Higher education in the United States often requires a lot of financial resources and typically, those with a college degree receive greater incomes. Thus, it’s not surprising that where there are college graduates, there are also higher home values.   
 
-Our first model, that uses the natural log of the number of people living below the poverty line, the percentage of people with at least a bachelor’s degree, the percentage of vacant house unity, and the percentage of single house units, does yield the best model given our predictors. When investigating the influence our predictors had on median house value, we saw that our f-statistic was associated with a very low p-value <0.0000000000000002, meaning that our model held some promise and that at least one of our predictors had significant influence on our dependent value. Further investigation using stepwise regression informed us that in fact every one of our predictors was useful in predicting median house value. Additionally, we wanted to verify that our four predictors were worth keeping, so we built a model using only two variables: percentage of vacant units and median household value. On both the four and two predictor models, we ran a cross-validation, then we compared the root mean squared error. **[insert Hasa’s findings here.]**
+Our first model, that uses the natural log of the number of people living below the poverty line, the percentage of people with at least a bachelor’s degree, the percentage of vacant house units, and the percentage of single house units, does yield the best model given our predictors. When investigating the influence our predictors had on median house value, we saw that our f-statistic was associated with a very low p-value <0.0000000000000002, meaning that our model held some promise and that at least one of our predictors had significant influence on our dependent value. Further investigation using stepwise regression informed us that in fact every one of our predictors was useful in predicting median house value. Additionally, we wanted to verify that our four predictors were worth keeping, so we built a model using only two variables: percentage of vacant units and median household value. On both the four and two predictor models, we ran a cross-validation, then we compared the root mean squared error. 
 
-If we were to bring in new variables it might be interesting to look at the effect that greenspace, specifically tree presence, had on median house value. It’s our assumption that greenspace and trees are often found in areas with higher incomes and in areas that have been greatly influenced by historic red lining practices. Similarly, it would be interesting to incorporate historical red lining boundaries to investigate the effects they have on median house value.  
+We are always trying to get less variation since it will imply more accuracy and precision. In the results we observed that individuals with a Bachelor's degree or higher level of education, vacant houses, single house units and households living below poverty line are the factors effecting median house value. Among those 4 factors, individuals with Bachelor's degree or higher level and single household are projecting more variation on median household value. When we examine the results from the Table 2 we get the following relationships between each of the variables. The relationship between Median household value is in the opposite direction which indicates that if median household value increases, there is a decrease in the below poverty line value. If Median household Value increases then the percent of bachelors and higher would also increase with a correlation value of 0.7357. Similarly, we can identify the relationship between each of the variables with another variable. Using the regression equation, substituting the corresponding values to the input variables we are able to interpret the value of the house hold median value. Based on the results adjects R^2^ = 0.6615 which indicates that 66.15% of the variation of the output variables are explained by the chosen input variables. Higher R^2^ value indicates a good git for the model. AIC – Akaike Information Criteria, for the given set of data the model is the one which has minimum AIC. 
+
+If we were to bring in new variables it might be interesting to look at the effect that green space, specifically tree presence, had on median house value. It’s our assumption that green space and trees are often found in areas with higher incomes and in areas that have been greatly influenced by historic red lining practices. Similarly, it would be interesting to incorporate historical red lining boundaries to investigate the effects they have on median house value.  
 
 While our model is strong, we must acknowledge that our model does not account at all for spatial autocorrelation. We can see in Maps 3 and 4 that the spatial distribution of our standardized residuals appear to be clustered. What this means for our model is that we are missing a variable to account for the spatial influence on median house value. Therefore, without adding such a variable our model will never be as accurate as one that does account for this.
 
