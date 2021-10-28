@@ -53,19 +53,52 @@ ourdata <- read.csv("https://raw.githubusercontent.com/bri-ne/MUSA500_Assignment
 
 ### **Introduction**
 
-In this study we’ll be investigating the relationship between a few neighborhood characteristics with median home value across U.S. Census block groups in Philadelphia, PA. Home value is a metric of interest to many from different fields. Current and prospective homeowners and the private sector have obvious interest in understanding which neighborhood characteristic influence house price. But justice-oriented organizations as well as local governments also have interest in what factors influence home prices. For example, many local government budgets rely on property taxes – a metric they have a hand in setting. Understanding what factors may lead to greater home prices and thus greater property taxes and more revenue for the city, can help local governments plan their budgets but also programs that can help neighborhoods grow. 
+In this study we'll be investigating the relationship between a few
+neighborhood characteristics with median home value across U.S. Census
+block groups in Philadelphia, PA. Home value is a metric of interest to
+many from different fields. Current and prospective homeowners and the
+private sector have obvious interest in understanding which neighborhood
+characteristic influence house price. But justice-oriented organizations
+as well as local governments also have interest in what factors
+influence home prices. For example, many local government budgets rely
+on property taxes -- a metric they have a hand in setting. Understanding
+what factors may lead to greater home prices and thus greater property
+taxes and more revenue for the city, can help local governments plan
+their budgets but also programs that can help neighborhoods grow.
 
-Here we examine the effect that education, poverty, housing form, and vacancies have on house prices across Philadelphia. There are some ideas we have about the effects of our variables, such as poverty. Common sense would suggest that if neighborhood (or block group) poverty is high, then it’s unlikely that house prices in that area will be high. Additionally, given the exorbitant cost of higher education in the United States and that those with college degrees generally earn more, it’s also likely that a more educated block group might also have higher house prices. We’d like to be able to examine if any of these variables are statistically significant, and that is what we plan to do. The rest of this report will describe how we designed our study, the results, and discussion.  
+Here we examine the effect that education, poverty, housing form, and
+vacancies have on house prices across Philadelphia. There are some ideas
+we have about the effects of our variables, such as poverty. Common
+sense would suggest that if neighborhood (or block group) poverty is
+high, then it's unlikely that house prices in that area will be high.
+Additionally, given the exorbitant cost of higher education in the
+United States and that those with college degrees generally earn more,
+it's also likely that a more educated block group might also have higher
+house prices. We'd like to be able to examine if any of these variables
+are statistically significant, and that is what we plan to do. The rest
+of this report will describe how we designed our study, the results, and
+discussion.
 
 ### **Methods**
 
 ##### **a. Data Cleaning**
 
-Our study relies on census data, that includes observations for various demographic variables at the census block group level. We began with a data set of 1,816 observation and filtered out block groups with small populations (\<40), block groups with no housing units, and block groups with a median house value less than \$10,000. Additionally, a two separate block groups in North Philadelphia were removed due to a very high median house value (greater than \$80,000) and very low median household income (less than \$8,000). We were left with 1,720 observations to use in our analysis.
+Our study relies on census data, that includes observations for various
+demographic variables at the census block group level. We began with a
+data set of 1,816 observation and filtered out block groups with small
+populations (\<40), block groups with no housing units, and block groups
+with a median house value less than \$10,000. Additionally, a two
+separate block groups in North Philadelphia were removed due to a very
+high median house value (greater than \$80,000) and very low median
+household income (less than \$8,000). We were left with 1,720
+observations to use in our analysis.
 
 ##### **b. Exploratory Analysis**
 
-The first step we took in analyzing our data set, was to calculate summary statistics. These statistics include the mean and standard deviation of both our dependent variable Median House Value (MEDHVAL) and four independent predictors:
+The first step we took in analyzing our data set, was to calculate
+summary statistics. These statistics include the mean and standard
+deviation of both our dependent variable Median House Value (MEDHVAL)
+and four independent predictors:
 
 -   Number of Households Living Below the Poverty Line (NBELPOV)
 
@@ -77,76 +110,200 @@ The first step we took in analyzing our data set, was to calculate summary stati
 -   Percent of residents in Block Group with at least a bachelor's
     degree (PCTBACHMOR)
 
-Doing this gives us a cursory understanding of what the values our predictors and dependent variable look like. Additionally, we explored the distribution of our data through the use of histograms. With a histogram plot of the values of our variables, we can determine if they are normally distributed. This is important for determining which kind of regression we will use. Different regression models have different assumptions. Some suggest that the residuals, or the estimate of error of observations in our sample, for each variable should be normally distributed.  
+Doing this gives us a cursory understanding of what the values our
+predictors and dependent variable look like. Additionally, we explored
+the distribution of our data through the use of histograms. With a
+histogram plot of the values of our variables, we can determine if they
+are normally distributed. This is important for determining which kind
+of regression we will use. Different regression models have different
+assumptions. Some suggest that the residuals, or the estimate of error
+of observations in our sample, for each variable should be normally
+distributed.
 
-It is possible for a non-normally distributed variable to have normally distributed values, but it's much more likely that if the variable is not normally distributed neither will its residuals. However, Central Limit Theorem suggests that if you have enough observations, then the normality of your variable or its residuals shouldn't matter. In any case we are interested in exploring whether or not our variables are distributed, so in the case that they are not, we can transform them and preserve the assumptions of the regression we use. That is our intention because we hope to make an interpretable model and having normally distributed variables, and by extension residuals, our model will be easier to interpret.  
+It is possible for a non-normally distributed variable to have normally
+distributed values, but it's much more likely that if the variable is
+not normally distributed neither will its residuals. However, Central
+Limit Theorem suggests that if you have enough observations, then the
+normality of your variable or its residuals shouldn't matter. In any
+case we are interested in exploring whether or not our variables are
+distributed, so in the case that they are not, we can transform them and
+preserve the assumptions of the regression we use. That is our intention
+because we hope to make an interpretable model and having normally
+distributed variables, and by extension residuals, our model will be
+easier to interpret.
 
-Correlation is a standardized measure that informs us how strong the relationship is between two variables. This measure of relational strength between variables is usually shown as *r*. The value of *r* ranges from $-1 \leq r \geq 1$. A value of 1 or -1 implies a strong correlation, but the slope and relationship will be negative with a value of -1, and positive with a value of 1. A value of 0 implies there is no linear relationship at all. It is possible that with a value of 0, two variables do have some strong correlation, but it will not be linear as the value *r* only calculates linear relationships.
+Correlation is a standardized measure that informs us how strong the
+relationship is between two variables. This measure of relational
+strength between variables is usually shown as *r*. The value of *r*
+ranges from $-1 \leq r \geq 1$. A value of 1 or -1 implies a strong
+correlation, but the slope and relationship will be negative with a
+value of -1, and positive with a value of 1. A value of 0 implies there
+is no linear relationship at all. It is possible that with a value of 0,
+two variables do have some strong correlation, but it will not be linear
+as the value *r* only calculates linear relationships.
 
 For our data we used Pearson's Correlation equation:
 
 $$r = \frac{{}\sum_{i=1}^{n} (x_i - \overline{x})(y_i - \overline{y})}
 {\sqrt{\sum_{i=1}^{n} (x_i - \overline{x})^2(y_i - \overline{y})^2}}$$
 
-Typically, if any two predictors have a correlation of $-0.8 < r > 0.8$, then we might need to remove them from the model due to their multicollinearity. Multicollinearity occurs when two variables are very strongly correlated to each other. If two variables with strong correlations were incorporated into the same model, there will be little benefit and our coefficient estimates may be less reliable. Since we are concerned with the interpretability of our model, we intended to avoid multicollinearity.
+Typically, if any two predictors have a correlation of $-0.8 < r > 0.8$,
+then we might need to remove them from the model due to their
+multicollinearity. Multicollinearity occurs when two variables are very
+strongly correlated to each other. If two variables with strong
+correlations were incorporated into the same model, there will be little
+benefit and our coefficient estimates may be less reliable. Since we are
+concerned with the interpretability of our model, we intended to avoid
+multicollinearity.
 
 ##### **c. Multiple Regression Analysis**
 
-We will use multiple Ordinary Least Squares (OLS) regression to examine the relationship between our variable of interest and our explanatory variables. OLS multiple regression determines the strength and direction (positive, negative, zero) of the relationship, and goodness of model fit. We calculate the coefficient 𝛽i of each predictor which is interpreted as the amount by which the dependent variable, in our case median house value, changes as the independent variable increases by one unit, holding all other predictors constant. The model includes the error term 𝜀, and is defined, for each observation i, as the vertical distance from the observed value and the predicted value of y. The error term is included in the equation to allow a point to fall either above or below the regression line. We are regressing median house value on percentage of homes living below poverty, percentage of individuals with a bachelor's degree or higher, percentage of vacant homes, and percentage of single house units in Philadelphia. Our regression equation is as follows:
+We will use multiple Ordinary Least Squares (OLS) regression to examine
+the relationship between our variable of interest and our explanatory
+variables. OLS multiple regression determines the strength and direction
+(positive, negative, zero) of the relationship, and goodness of model
+fit. We calculate the coefficient 𝛽i of each predictor which is
+interpreted as the amount by which the dependent variable, in our case
+median house value, changes as the independent variable increases by one
+unit, holding all other predictors constant. The model includes the
+error term 𝜀, and is defined, for each observation i, as the vertical
+distance from the observed value and the predicted value of y. The error
+term is included in the equation to allow a point to fall either above
+or below the regression line. We are regressing median house value on
+percentage of homes living below poverty, percentage of individuals with
+a bachelor's degree or higher, percentage of vacant homes, and
+percentage of single house units in Philadelphia. Our regression
+equation is as follows:
 
 $$y = MEDHVAL = \beta_{0} + \beta_{1}LNBELPOV100 + \beta_{2}PCTBACHMOR + \beta_{3}PCTVACANT + \beta_{4}PCTSINGLES + \epsilon$$
 
-OLS multiple regression models hold assumptions, the first being a linear relationship between x and y, which was examined via our scatter plots in Figure 3. The second assumption is normality of residuals. This is important for point estimation, confidence intervals, and hypothesis tests for small samples due to the Central Limit Theorem. Normality is essential for all sample sizes in order to predict future values of y. If residuals appear to have a non-normal distribution, it may indicate a non-linear relationship, or non-normal distributions of the dependent/independent variables. This may be solved with a logarithmic transformation of the variables. The third and fourth assumptions are that residuals are random and homoscedastic. There should be no relationship or pattern between the observed values and the predicted values. Homoscedasticity means the variance of residuals should look constant for different values when plotted. The fifth assumption states that observations and residuals must be independent. If data has a temporal or spatial component, residuals of observations that are close in time or space will be autocorrelated, or dependent on one another. In this case, time series or spatial regression should be used over OLS. The final assumption of multiple OLS regression is the absence of multicollinearity. Said differently, the predictors should not be strongly correlated with one another. The presence of multicollinearity causes unstable coefficient estimates and weakens the model. The parameters of multiple regression are coefficients β~0~ ,..., β~k~, where k = number of predictors. β~0~ represents the y- intercept of the regression line. β~1~ ... β~k~ represent the coefficients of variables x~1~ ... x~k~. Each independent variable will have its own slope coefficient which will indicate the relationship of that predictor with the dependent variable, controlling for all other independent variables in the regression. OLS regression calculates the sum of the least squares of residuals. The least squares estimates for β~0~,..., β~k~ are obtained when the quantity for SSE (equation below)is minimized. 
+OLS multiple regression models hold assumptions, the first being a
+linear relationship between x and y, which was examined via our scatter
+plots in Figure 3. The second assumption is normality of residuals. This
+is important for point estimation, confidence intervals, and hypothesis
+tests for small samples due to the Central Limit Theorem. Normality is
+essential for all sample sizes in order to predict future values of y.
+If residuals appear to have a non-normal distribution, it may indicate a
+non-linear relationship, or non-normal distributions of the
+dependent/independent variables. This may be solved with a logarithmic
+transformation of the variables. The third and fourth assumptions are
+that residuals are random and homoscedastic. There should be no
+relationship or pattern between the observed values and the predicted
+values. Homoscedasticity means the variance of residuals should look
+constant for different values when plotted. The fifth assumption states
+that observations and residuals must be independent. If data has a
+temporal or spatial component, residuals of observations that are close
+in time or space will be autocorrelated, or dependent on one another. In
+this case, time series or spatial regression should be used over OLS.
+The final assumption of multiple OLS regression is the absence of
+multicollinearity. Said differently, the predictors should not be
+strongly correlated with one another. The presence of multicollinearity
+causes unstable coefficient estimates and weakens the model. The
+parameters of multiple regression are coefficients β~0~ ,..., β~k~,
+where k = number of predictors. β~0~ represents the y- intercept of the
+regression line. β~1~ ... β~k~ represent the coefficients of variables
+x~1~ ... x~k~. Each independent variable will have its own slope
+coefficient which will indicate the relationship of that predictor with
+the dependent variable, controlling for all other independent variables
+in the regression. OLS regression calculates the sum of the least
+squares of residuals. The least squares estimates for β~0~,..., β~k~ are
+obtained when the quantity for SSE (equation below)is minimized.
 
 $$ 
 SSE = \sum_{i=1}^{n} \epsilon^2 = \sum_{i=1}^{n} (y-\hat{y})^2    
 = \sum_{i=1}^{n}(y_{i}- \hat{\beta}_{0}- \hat{\beta}_{1}x_{1i}- \hat{\beta}_{2}x_{2i}- ...- \hat{\beta}_{k}x_{ki})^2 
-$$
-Variance is the other parameter that needs to be estimated in multiple regression, calculated as $σ^2=\frac{SSE}{(n-(k+1))}=MSE$ , where k = number of predictors, n = number of observations, and MSE stands Mean Squared Error. In multiple regression, R^2^ is the coefficient of multiple determination, or the proportion of variance in the model explained by all k predictors, represented by the equation $R^2=1-\frac{SSE}{SST}$ . The R^2^ will increase with more predictors in the model and can be adjusted for the number of predictors with the equation $R_{adj}^2=\frac{(n-1) R^2-k}{n-(k+1)}$ The model utility test, F-ratio, is conducted on the regression model to determine a goodness of fit measure. It can be interpreted as a significance test for R^2^. The F-ratio tests the null hypothesis, H~0~ that all coefficients in the model are jointly zero, vs the alternative hypothesis Ha that at least one of the coefficients is not 0. Said differently, we test to make sure none of the independent variables is a significant predictor o the dependent variable. From the F-ratio we are looking for a P value that is less than 0.05. Once an F-ratio is determined, we run a T-test on every individual predictor. The null hypothesis states that the predictor (ie; Percentage of vacant homes) has no association with the dependent variable, once again in our case is median house value. Our goal is to reject the null hypothesis H~0~ in favor of the alternative hypothesis H~a~ which is Β~i~ ≠ 0 for each predictor.
+$$ Variance is the other parameter that needs to be estimated in
+multiple regression, calculated as $σ^2=\frac{SSE}{(n-(k+1))}=MSE$ ,
+where k = number of predictors, n = number of observations, and MSE
+stands Mean Squared Error. In multiple regression, R^2^ is the
+coefficient of multiple determination, or the proportion of variance in
+the model explained by all k predictors, represented by the equation
+$R^2=1-\frac{SSE}{SST}$ . The R^2^ will increase with more predictors in
+the model and can be adjusted for the number of predictors with the
+equation $R_{adj}^2=\frac{(n-1) R^2-k}{n-(k+1)}$ The model utility test,
+F-ratio, is conducted on the regression model to determine a goodness of
+fit measure. It can be interpreted as a significance test for R^2^. The
+F-ratio tests the null hypothesis, H~0~ that all coefficients in the
+model are jointly zero, vs the alternative hypothesis Ha that at least
+one of the coefficients is not 0. Said differently, we test to make sure
+none of the independent variables is a significant predictor o the
+dependent variable. From the F-ratio we are looking for a P value that
+is less than 0.05. Once an F-ratio is determined, we run a T-test on
+every individual predictor. The null hypothesis states that the
+predictor (ie; Percentage of vacant homes) has no association with the
+dependent variable, once again in our case is median house value. Our
+goal is to reject the null hypothesis H~0~ in favor of the alternative
+hypothesis H~a~ which is Β~i~ ≠ 0 for each predictor.
 
 ##### **d. Additional Analysis**
 
-One of the methods is used is Stepwise regression methods, a simple data mining method which selects predictors based on some criteria
-–P-values below a certain threshold (e.g., only include variables where p-values < 0.1).Smallest (i.e., best) value of the Akaike Information Criterion (AIC), a measure of relative quality of 
-statistical models.
-•Stepwise regression model has various limitations:
-–The final model is not guaranteed to be optimal in any specified sense.
-–The procedure yields a single final model, although there are often several equally good models.
-–Stepwise regression does not take into account a researcher's knowledge about the predictors. It 
-may be necessary to force the procedure to include important predictors.
-–Although the order in which variables are removed or added can provide valuable information 
-about the quality of the predictors, we should be careful to not over-interpret this order.
-–One should not jump to the conclusion that all the important predictor variables for 
-predicting y have been identified, or that all the unimportant predictor variables have been 
-eliminated. It is, of course, possible that we may have committed a Type I or Type II error.
-–Many t-tests for testing βk = 0 are conducted in a stepwise regression procedure. The probability is 
-therefore high that we included some unimportant predictors or excluded some important 
-predictors.
-Sources:
-•https://onlinecourses.science.psu.edu/stat501/node/88 
-•http://andrewgelman.com/2014/06/02/hate-stepwise-regression/ 
+One of the methods is used is Stepwise regression methods, a simple data
+mining method which selects predictors based on some criteria --P-values
+below a certain threshold (e.g., only include variables where p-values
+\< 0.1).Smallest (i.e., best) value of the Akaike Information Criterion
+(AIC), a measure of relative quality of statistical models. •Stepwise
+regression model has various limitations: --The final model is not
+guaranteed to be optimal in any specified sense. --The procedure yields
+a single final model, although there are often several equally good
+models. --Stepwise regression does not take into account a researcher's
+knowledge about the predictors. It may be necessary to force the
+procedure to include important predictors. --Although the order in which
+variables are removed or added can provide valuable information about
+the quality of the predictors, we should be careful to not
+over-interpret this order. --One should not jump to the conclusion that
+all the important predictor variables for predicting y have been
+identified, or that all the unimportant predictor variables have been
+eliminated. It is, of course, possible that we may have committed a Type
+I or Type II error. --Many t-tests for testing βk = 0 are conducted in a
+stepwise regression procedure. The probability is therefore high that we
+included some unimportant predictors or excluded some important
+predictors. Sources:
+•<https://onlinecourses.science.psu.edu/stat501/node/88>
+•<http://andrewgelman.com/2014/06/02/hate-stepwise-regression/>
 
 $$ 
 {b}_{j.std} = {b}_{j}({Sx}_{j}/{Sy}) 
 $$
 
-Where Sy and Sxj are the standard deviations for the dependent variable and the corresponding jth independent variable
+Where Sy and Sxj are the standard deviations for the dependent variable
+and the corresponding jth independent variable
 
-K-fold cross validation is another method used in this process. Involves randomly dividing the set of observations into k groups or folds, of (approximately) equal size. The 1st fold is treated as a validation data set and the model is fitted on the remaining k - 1 folds (training data set).The Mean Square Error (MSE) is computed for the validation fold. This procedure is repeated k times; each time, a different fold is treated as the validation data set. This process results in k estimates of the MSE. The k-fold MSE estimate is computed by averaging the MSE's across the k folds. The k-fold RMSE is computed as the square root of that MSE. In practice, k is usually set to 5 or 10. Leave One Out cross validation (LOOCV) is a special case of k-fold Cross Validation when k = n. 
-The biggest draw back of k-fold cross validation is the scope of over fitting the model. Even though a complicated/non linear model may do well with modeling the training data, the same model will likely be abysmal at modeling unseen validation data.
+K-fold cross validation is another method used in this process. Involves
+randomly dividing the set of observations into k groups or folds, of
+(approximately) equal size. The 1st fold is treated as a validation data
+set and the model is fitted on the remaining k - 1 folds (training data
+set).The Mean Square Error (MSE) is computed for the validation fold.
+This procedure is repeated k times; each time, a different fold is
+treated as the validation data set. This process results in k estimates
+of the MSE. The k-fold MSE estimate is computed by averaging the MSE's
+across the k folds. The k-fold RMSE is computed as the square root of
+that MSE. In practice, k is usually set to 5 or 10. Leave One Out cross
+validation (LOOCV) is a special case of k-fold Cross Validation when k =
+n. The biggest draw back of k-fold cross validation is the scope of over
+fitting the model. Even though a complicated/non linear model may do
+well with modeling the training data, the same model will likely be
+abysmal at modeling unseen validation data.
 
 $$ 
 CV(λ)= 1/k\sum_{k=1}^{k} E_{k}(λ)
-$$
-Root Mean Square Root(RMSE)is an estimate of the magnitude of a typical residual which is obtained by diving the Residual Sum of Squares by the number of observations giving us a Mean Square Error(MSE). Which is then square rooted to get a RMSE.
-There are a few limitations with RMSE, one being the number of observations become the training and validation data sets. The other limitation would be that only a part of the data set would be used for model fitting and parameter estimation, would be specially be problematic whent eh sample deta is already small by itself.
-
+$$ Root Mean Square Root(RMSE)is an estimate of the magnitude of a
+typical residual which is obtained by diving the Residual Sum of Squares
+by the number of observations giving us a Mean Square Error(MSE). Which
+is then square rooted to get a RMSE. There are a few limitations with
+RMSE, one being the number of observations become the training and
+validation data sets. The other limitation would be that only a part of
+the data set would be used for model fitting and parameter estimation,
+would be specially be problematic whent eh sample deta is already small
+by itself.
 
 ### **Results**
 
 ##### **a. Exploratory Results**
 
-To gain a better understanding of our observations we calculated summary statistics and examined the distribution of the variables. Below, Table 1 shows the summary statistics calculated for our dependent variable, Median House Value (MEDHVAL) and our four independent variables:
+To gain a better understanding of our observations we calculated summary
+statistics and examined the distribution of the variables. Below, Table
+1 shows the summary statistics calculated for our dependent variable,
+Median House Value (MEDHVAL) and our four independent variables:
 
 -   Number of Households Living Below the Poverty Line (NBELPOV)
 
@@ -158,11 +315,37 @@ To gain a better understanding of our observations we calculated summary statist
 -   Percent of residents in Block Group with at least a bachelor's
     degree (PCTBACHMOR)
 
-All of our variables have a standard deviation that’s close to or greater than the mean of our variables. This isn’t unlikely, as standard normal distribution yields a mean of 0 and a standard deviation of 1. What the standard deviations do show is that there is not a lot of precision in our data set, but given that nature of our data, that is okay.  
+All of our variables have a standard deviation that's close to or
+greater than the mean of our variables. This isn't unlikely, as standard
+normal distribution yields a mean of 0 and a standard deviation of 1.
+What the standard deviations do show is that there is not a lot of
+precision in our data set, but given that nature of our data, that is
+okay.
 
-The distribution of our raw variables are shown in Figure 1. We thought it wise to also illustrate the distribution of the natural log of all our variables, as shown in Figure 2. From these visualizations, it was clear that both the dependent variable and NBELPOV were not normally distributed, and as a result were likely not great for our linear regression. A linear regression model assumes that the residuals, or the estimate of error of observations in our sample, for each variable is normally distributed. And while it is possible for a variable with non-normal distribution to have normally distributed residuals, it is more likely that that variables with non-normal distributions also have non-normally distributed residuals. If it were the case that the residuals of our variables were not normally distributed, then we would be in violation of the assumption of linear regression. Though there is a case to be made, that we meet the criteria of Central Limit Theorem, based on the amount of observations we have, we have decided to address to non-normally distributed variables, so that we can confidently perform statistically hypothesis testing with our model.
+The distribution of our raw variables are shown in Figure 1. We thought
+it wise to also illustrate the distribution of the natural log of all
+our variables, as shown in Figure 2. From these visualizations, it was
+clear that both the dependent variable and NBELPOV were not normally
+distributed, and as a result were likely not great for our linear
+regression. A linear regression model assumes that the residuals, or the
+estimate of error of observations in our sample, for each variable is
+normally distributed. And while it is possible for a variable with
+non-normal distribution to have normally distributed residuals, it is
+more likely that that variables with non-normal distributions also have
+non-normally distributed residuals. If it were the case that the
+residuals of our variables were not normally distributed, then we would
+be in violation of the assumption of linear regression. Though there is
+a case to be made, that we meet the criteria of Central Limit Theorem,
+based on the amount of observations we have, we have decided to address
+to non-normally distributed variables, so that we can confidently
+perform statistically hypothesis testing with our model.
 
-With this motivation, we concluded that it would be best to use the natural logged dependent variable and NBELPOV. Additionally we chose to use a natural log (and a natural log +1, where there were zeros in the observations), because those two variables were positively skewed. We used the raw versions of the remaining variables. We will make more regression assumption checks further in this document.
+With this motivation, we concluded that it would be best to use the
+natural logged dependent variable and NBELPOV. Additionally we chose to
+use a natural log (and a natural log +1, where there were zeros in the
+observations), because those two variables were positively skewed. We
+used the raw versions of the remaining variables. We will make more
+regression assumption checks further in this document.
 
 ```{r summarydist_code, include=TRUE, results='hide', echo=FALSE, warning=FALSE, message=FALSE}
 
@@ -248,9 +431,21 @@ LNhists
 
 ```
 
-We next test the relationship between our predictor variables using a correlation measure to make sure our model is free of multicollinearity. In Table 1 below, you'll notice that each predictor's correlation with itself is 1. But none of our predictor variables have a correlation with another \> 0.8 or \<-0.8, so our model will be free from multicollinearity.The other regression assumptions will be explored in the Regression Assumption Checks section below. 
+We next test the relationship between our predictor variables using a
+correlation measure to make sure our model is free of multicollinearity.
+In Table 1 below, you'll notice that each predictor's correlation with
+itself is 1. But none of our predictor variables have a correlation with
+another \> 0.8 or \<-0.8, so our model will be free from
+multicollinearity.The other regression assumptions will be explored in
+the Regression Assumption Checks section below.
 
-Next, we looked at in our exploration of our data is the distribution of our predictor’s values across space. Below are a series of maps that show this distribution, with values broken out by Jenks breaks. Map 1 shows us how our dependent variable, LN Median House Value, differs across census tract, and Map 2 shows our predictors variables across tracts. Most have 5 breaks, but the values for LN %BELPOV were note varied enough so we included only three breaks. 
+Next, we looked at in our exploration of our data is the distribution of
+our predictor's values across space. Below are a series of maps that
+show this distribution, with values broken out by Jenks breaks. Map 1
+shows us how our dependent variable, LN Median House Value, differs
+across census tract, and Map 2 shows our predictors variables across
+tracts. Most have 5 breaks, but the values for LN %BELPOV were note
+varied enough so we included only three breaks.
 
 ```{r choropleth_code, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE, results='hide'}
 
@@ -411,11 +606,29 @@ choro_LNMEDHVAL
 mapgrid
 ```
 
+The map of the percentage of houses that are vacant looks like the
+negative version of the map our dependent variable, LN of medial house
+value. Logically, that makes sense. Where houses are vacant, the value
+is low -- a clear relationship. This strong relationship will not be a
+problem for our model, since it is between the dependent variable and a
+predictor.
 
-
-The map of the percentage of houses that are vacant looks like the negative version of the map our dependent variable, LN of medial house value. Logically, that makes sense. Where houses are vacant, the value is low – a clear relationship. This strong relationship will not be a problem for our model, since it is between the dependent variable and a predictor.  
-
-On the other hand, the map of the percentage of individuals with a bachelor's or higher looks the most like our dependent variable, while the percentage of households living in poverty looks almost the opposite. It also appears as though where there are people with at least Bachelors, there are also single house units and house value is higher. Because of this it might be the case that our bachelor's variable is somewhat, if not strongly, correlated with our poverty variables, in a negative direction. This does agree with the ideas we started this analysis with, I.e., the less means you have the less likely you might be to complete college and the less likely you will own an expensive house. These are of course generalizations, and we must note that our model cannot predict the characteristics of any one person’s life. The most our model can do is illuminate trends. Our next step is to identify whether the relationship between our predictors such as our poverty and bachelor’s variables will be an issue for the assumptions of our model. More on this below.  
+On the other hand, the map of the percentage of individuals with a
+bachelor's or higher looks the most like our dependent variable, while
+the percentage of households living in poverty looks almost the
+opposite. It also appears as though where there are people with at least
+Bachelors, there are also single house units and house value is higher.
+Because of this it might be the case that our bachelor's variable is
+somewhat, if not strongly, correlated with our poverty variables, in a
+negative direction. This does agree with the ideas we started this
+analysis with, I.e., the less means you have the less likely you might
+be to complete college and the less likely you will own an expensive
+house. These are of course generalizations, and we must note that our
+model cannot predict the characteristics of any one person's life. The
+most our model can do is illuminate trends. Our next step is to identify
+whether the relationship between our predictors such as our poverty and
+bachelor's variables will be an issue for the assumptions of our model.
+More on this below.
 
 ```{r corr_code_output, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
 
@@ -438,24 +651,76 @@ pcorr <- pcorr%>%kable(digits = c(4, 4, 4, 4, 4),
 pcorr
 ```
 
-In our correlation matrix, shown in Table 2, we can see that the variables that have the greatest correlation are in fact the percentage of the population with a bachelor's degree or more and our dependent variable, LNMEDHVAL. That is a relationship we were able to spot in comparing the maps of those two variables and one that is welcome in our model. As is the next strongest relationship between the dependent variable and our predictor, percentage of vacant houses. The relationship we spotted between poverty and education in our maps is shown to be one of the strongest between all our variables, but with an **r** of –0.3198, we will not be in violation of any assumptions of our regression. In fact, none of variable matchups produce an **r** greater than 0.8 or less than –0.8, so we are clear to continue with using every variable.   
-
+In our correlation matrix, shown in Table 2, we can see that the
+variables that have the greatest correlation are in fact the percentage
+of the population with a bachelor's degree or more and our dependent
+variable, LNMEDHVAL. That is a relationship we were able to spot in
+comparing the maps of those two variables and one that is welcome in our
+model. As is the next strongest relationship between the dependent
+variable and our predictor, percentage of vacant houses. The
+relationship we spotted between poverty and education in our maps is
+shown to be one of the strongest between all our variables, but with an
+**r** of --0.3198, we will not be in violation of any assumptions of our
+regression. In fact, none of variable matchups produce an **r** greater
+than 0.8 or less than --0.8, so we are clear to continue with using
+every variable.
 
 ##### **b. Regression Results**
 
-After we explore our data and transform our variables as needed, the final regression equation is as follows:
+After we explore our data and transform our variables as needed, the
+final regression equation is as follows:
 
 $$y = LNMEDHVAL = \beta_{0} + \beta_{1}LNBELPOV100 + \beta_{2}PCTBACHMOR + \beta_{3}PCTVACANT + \beta_{4}PCTSINGLES + \epsilon$$
-We regressed the natural log of median house value (LNMEDHVAL) on the natural log of the number of people living below poverty (LNBELPOV100), the percent of individuals with Bachelor's Degrees or higher (PCTBACHMORE), the percent of vacant houses (PCTVACANT), and the percent of single house units (PCTSINGLES). The regression output tells us that these variables are highly significant predictors and are positively associated with the median house value (p<0.0001 for all variables). The coefficients will have a modified interpretation because we have used a logarithmic transformation on the dependent variable. To interpret the beta coefficient of LNBELPOV100, we can say a 1% increase in the number of individuals living in poverty corresponds to a $(1.01^{\beta_1} - 1)*100 = (1.01^{-.079} - 1) * 100 = -0.0786 \%$ change (i.e., a .0786% decrease) in median house value. The regression also tells us that a 1% increase in the percent of individuals with a Bachelor's degree or more is associated with a change in median house value by $\beta_2 ln(\frac {101}{100}) = 0.0209 ln (\frac {101}{100}) = 0.00021$ \$ (i.e., an increase in median house value by 0.00021 \$). The  next coefficients will be interpreted in a similar way. A 1% increase in percent of vacant homes corresponds to an approximately $\beta_3 ln(\frac {101}{100}) = 0.0191 ln (\frac {101}{100}) = 0.00019$ \$ increase in median house value. Lastly, a 1% increase in percent of single unit homes corresponds to an approximately $\beta_4 ln(\frac {101}{100}) = 0.0029 ln (\frac {101}{100}) = 0.00003$ \$ increase in median house value. 
+We regressed the natural log of median house value (LNMEDHVAL) on the
+natural log of the number of people living below poverty (LNBELPOV100),
+the percent of individuals with Bachelor's Degrees or higher
+(PCTBACHMORE), the percent of vacant houses (PCTVACANT), and the percent
+of single house units (PCTSINGLES). The regression output tells us that
+these variables are highly significant predictors and are positively
+associated with the median house value (p\<0.0001 for all variables).
+The coefficients will have a modified interpretation because we have
+used a logarithmic transformation on the dependent variable. To
+interpret the beta coefficient of LNBELPOV100, we can say a 1% increase
+in the number of individuals living in poverty corresponds to a
+$(1.01^{\beta_1} - 1)*100 = (1.01^{-.079} - 1) * 100 = -0.0786 \%$
+change (i.e., a .0786% decrease) in median house value.
 
-The p value of less than 0.0001 for LNBELPOV100 tells us that if there is actually no relationship between LNBELPOV100 and the dependent variable LNMEDHVAL (i.e., if the  null  hypothesis  that  $\beta_1 =0$ is actually  true), then the  probability of getting  a $\beta_1$ coefficient estimate of -0.0789054 is less than  0.0001. Similarly, the  p-value  of less than 0.0001 for PCTBACHMORE tells us that **if** there is actually no relationship between PCTBACHMORE and the dependent variable MEDHVAL (i.e., if the null hypothesis that $\beta_2=0$ is actually true), then the probability of getting a $\beta_2$ coefficient estimate of 0.02091 is less than 0.0001. The same interpretations can be made for the p values of PCTVACANT and PCTSINGLES - both of these predictors are statistically significant with a very low p value < 0.0001. These low probabilities indicate that we can safely reject  
-$H_0: \beta_1 = 0$ for $H_a: \beta_1 ≠ 0$,   
-$H_0: \beta_2 = 0$ for $H_a: \beta_2 ≠ 0$,   
-$H_0: \beta_3 = 0$ for $H_a: \beta_3 ≠ 0$,   
-$H_0: \beta_4 = 0$ for $H_a: \beta_4 ≠ 0$   
+The regression also tells us that the percent of individuals with a
+Bachelor's degree or more goes up by 2.112% when median house value goes
+up by one unit (\$1), holding all other variables constant, as shown by
+this equation:
+$(e^{\beta_2}-1)*100\% = (e^{0.0209}-1)*100\% = 2.112 \%$. The next
+coefficient will be interpreted in a similar way. A one unit increase in
+median house value corresponds with a 1.928% increase in percent of
+vacant homes, with all else constant:
+$(e^{\beta_3}-1)*100\% = (e^{0.0191}-1)*100\% = 1.928 \%$. Lastly, the
+percent of single unit homes goes up by 0.2904% when median house value
+increases by one unit, with all else
+constant:$(e^{\beta_3}-1)*100\% = (e^{0.0029}-1)*100\% = 0.2904 \%$.
+
+The p value of less than 0.0001 for LNBELPOV100 tells us that if there
+is actually no relationship between LNBELPOV100 and the dependent
+variable LNMEDHVAL (i.e., if the null hypothesis that $\beta_1 =0$ is
+actually true), then the probability of getting a $\beta_1$ coefficient
+estimate of -0.0789054 is less than 0.0001. Similarly, the p-value of
+less than 0.0001 for PCTBACHMORE tells us that **if** there is actually
+no relationship between PCTBACHMORE and the dependent variable MEDHVAL
+(i.e., if the null hypothesis that $\beta_2=0$ is actually true), then
+the probability of getting a $\beta_2$ coefficient estimate of 0.02091
+is less than 0.0001. The same interpretations can be made for the p
+values of PCTVACANT and PCTSINGLES - both of these predictors are
+statistically significant with a very low p value \< 0.0001. These low
+probabilities indicate that we can safely reject\
+$H_0: \beta_1 = 0$ for $H_a: \beta_1 ≠ 0$,\
+$H_0: \beta_2 = 0$ for $H_a: \beta_2 ≠ 0$,\
+$H_0: \beta_3 = 0$ for $H_a: \beta_3 ≠ 0$,\
+$H_0: \beta_4 = 0$ for $H_a: \beta_4 ≠ 0$\
 (at most reasonable levels of α = P(Type I error)).
 
-A over half of the variance in the dependent variable is explained by the model (R^2^ and Adjusted R^2^ are 0.6623 and 0.6615, respectively). The low p-value associated with the F-ratio shows that we can reject the null hypothesis that all coefficients in the model are 0.
+A over half of the variance in the dependent variable is explained by
+the model (R^2^ and Adjusted R^2^ are 0.6623 and 0.6615, respectively).
+The low p-value associated with the F-ratio shows that we can reject the
+null hypothesis that all coefficients in the model are 0.
 
 ```{r regressionanalysis, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE, results='hide'}
 
@@ -532,7 +797,18 @@ anova.fit
 
 ##### **c. Regression Assumption Checks**
 
-This section will talk about testing model assumptions and aptness. The histograms of the variable distributions were presented earlier in the exploratory results section. Here, we will be checking to see if the assumption of a linear relationship between out dependent variable, LNMEDHVAL, and each of its predictors holds true. The scatter plots in Figure 3 display the relationship between each predictor and the natural log of median house value. As we can see from the scatter plots, PCTBACHMORE and LNMEDHVAL appear to have what most resembles a linear relationship, however the other scatter plots do not appear to be exactly linear. While this doesn't quite meet our first assumption, there is no strong polynomial relationship and for our case, a linear model would be the best fit through these observations. 
+This section will talk about testing model assumptions and aptness. The
+histograms of the variable distributions were presented earlier in the
+exploratory results section. Here, we will be checking to see if the
+assumption of a linear relationship between out dependent variable,
+LNMEDHVAL, and each of its predictors holds true. The scatter plots in
+Figure 3 display the relationship between each predictor and the natural
+log of median house value. As we can see from the scatter plots,
+PCTBACHMORE and LNMEDHVAL appear to have what most resembles a linear
+relationship, however the other scatter plots do not appear to be
+exactly linear. While this doesn't quite meet our first assumption,
+there is no strong polynomial relationship and for our case, a linear
+model would be the best fit through these observations.
 
 ```{r scatter_code, message=FALSE, echo=FALSE, results='hide', warning=TRUE, include=FALSE, fig.width=8, fig.height=12}
 
@@ -584,7 +860,16 @@ scattergrid
 
 ```
 
-The second assumption of OLS regression is the normality of residuals. Although this assumption isn't as important as some others, especially if we are working with data of a large sample size, it is still worth checking to see if it has been met. Figure 4 presents a histogram of our standardized residuals. A standardized residual is simply the residuals divided by their standard error. The residuals have been standardized for the purpose of these assumption checks to compare residuals for different observations to each other. The distribution appears to be normal and this may be attributed to the normality of our log transformed dependent variable. 
+The second assumption of OLS regression is the normality of residuals.
+Although this assumption isn't as important as some others, especially
+if we are working with data of a large sample size, it is still worth
+checking to see if it has been met. Figure 4 presents a histogram of our
+standardized residuals. A standardized residual is simply the residuals
+divided by their standard error. The residuals have been standardized
+for the purpose of these assumption checks to compare residuals for
+different observations to each other. The distribution appears to be
+normal and this may be attributed to the normality of our log
+transformed dependent variable.
 
 ```{r stdreshist, include=TRUE, echo=FALSE, message=FALSE, warning=FALSE}
 stdr.reshist <-  histogram( ~ stdres,data = ourdata, 
@@ -597,7 +882,18 @@ stdr.reshist <-  histogram( ~ stdres,data = ourdata,
 stdr.reshist
 ```
 
-The third assumption we will check for in our regression model is homoscedasticity of residuals. homoscedasticity refers to the randomness of variance in residuals regardless of the values of each x and indicates accuracy of model prediction. Figure 5 displays the relationship between the standardized residuals and the predicted median house value from our model in a scatter plot. Standardized residuals are our raw residuals divided by the standard error of estimate. Our model appears to meet the assumption of homoscedasticity because the variance residuals are largely random. There is no pattern in the residuals that would indicate systematic over or under prediction. Using standardized residuals while checking for homoscedasticity will also reveal outlier observations in the data set. 
+The third assumption we will check for in our regression model is
+homoscedasticity of residuals. homoscedasticity refers to the randomness
+of variance in residuals regardless of the values of each x and
+indicates accuracy of model prediction. Figure 5 displays the
+relationship between the standardized residuals and the predicted median
+house value from our model in a scatter plot. Standardized residuals are
+our raw residuals divided by the standard error of estimate. Our model
+appears to meet the assumption of homoscedasticity because the variance
+residuals are largely random. There is no pattern in the residuals that
+would indicate systematic over or under prediction. Using standardized
+residuals while checking for homoscedasticity will also reveal outlier
+observations in the data set.
 
 ```{r residplot, include=TRUE, echo=FALSE, message=FALSE, warning=FALSE, fig.width=10, fig.height=10}
 
@@ -611,7 +907,25 @@ ResidualPlot<- ggplot(ourdata, aes(x = predvals, y= stdres))+
 ResidualPlot
 ```
 
-We next make the assumption that our predictors are not spatially autocorrelated. Earlier in the report, under the exploratory results section, we plotted each predictor by census tract to see of how each of the predictors related to itself in space. All of the predictors, according to the choropleth maps, show clustering in space. This breaks our regression model's assumption of lack of spatial autocorrelation. This is not surprising as we would expect, in alignment with Tobler's first law of geometry, that nearer things are more related than distant things. For example, one census block group adjacent to another block group with high percentage of vacant homes, is more likely to also have a high percentage of vacant homes than not. The same can be applied to our other predictors as well. Wealth and poverty and their associated attributes will cluster around themselves. Map 3 presents a choropleth map of the standardized residuals by census block group. Here we observe a less obvious pattern of clustering. While the north and center of Philadelphia have some clustering of negative residual values, the standardized residuals appear to have a more random spatial pattern overall, as compared to the predictor value chlorpleth maps previously discussed.  
+We next make the assumption that our predictors are not spatially
+autocorrelated. Earlier in the report, under the exploratory results
+section, we plotted each predictor by census tract to see of how each of
+the predictors related to itself in space. All of the predictors,
+according to the choropleth maps, show clustering in space. This breaks
+our regression model's assumption of lack of spatial autocorrelation.
+This is not surprising as we would expect, in alignment with Tobler's
+first law of geometry, that nearer things are more related than distant
+things. For example, one census block group adjacent to another block
+group with high percentage of vacant homes, is more likely to also have
+a high percentage of vacant homes than not. The same can be applied to
+our other predictors as well. Wealth and poverty and their associated
+attributes will cluster around themselves. Map 3 presents a choropleth
+map of the standardized residuals by census block group. Here we observe
+a less obvious pattern of clustering. While the north and center of
+Philadelphia have some clustering of negative residual values, the
+standardized residuals appear to have a more random spatial pattern
+overall, as compared to the predictor value chlorpleth maps previously
+discussed.
 
 ```{r stdresANDmap.code, echo=FALSE, warning=FALSE, message=FALSE, results='hide', include =FALSE}
 
@@ -717,9 +1031,6 @@ choro_stdresclass <- ggplot() +
 
 ```
 
-
-
-
 ```{r stdres.map, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
 choro_stdresclass
 ```
@@ -810,7 +1121,6 @@ mse.tableK <- mse.table%>%kable(digits=c(5,5))%>%kable_styling( full_width=F)%>%
            general = "Table 9")
 ```
 
-
 ```{r fold.cv.summary.anova.output, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
 
 
@@ -825,17 +1135,78 @@ mse.tableK
 
 ```
 
-All the three predictors are kept that means the original models built for preceptors is best models since it has the lowest AIC.
-The RMSE for the 4 predictor is 0.366 and the RMSE for the 2 predictor (Percent vacant and Median Household Income) is 0.443. Since the 4 predictor RMSE is lower than the 2 predictor RMSE, the original model is the best.
+All the three predictors are kept that means the original models built
+for preceptors is best models since it has the lowest AIC. The RMSE for
+the 4 predictor is 0.366 and the RMSE for the 2 predictor (Percent
+vacant and Median Household Income) is 0.443. Since the 4 predictor RMSE
+is lower than the 2 predictor RMSE, the original model is the best.
 
 ### **Limitations & Conclusion**
 
-In this study we set out to investigate to what extent median house value is a factor of various neighborhood characteristics, and which characteristics were more powerful than others. As a result, in our first model that used four predictors we saw that education was the greatest factor, more specifically the percentage of people in a block group with at least a bachelor’s degree. This variable alone had a **r** of 0.7357, meaning it was positively correlated with median house value. In other words, as the percentage of people with at least a bachelor’s degree increases, so does house value.  This isn’t very surprising given the ideas we laid out in the introduction. Higher education in the United States often requires a lot of financial resources and typically, those with college degree receive greater incomes. Thus, it’s not surprising that where there are college graduates, there are also higher home values.   
+In this study we set out to investigate to what extent median house
+value is a factor of various neighborhood characteristics, and which
+characteristics were more powerful than others. As a result, in our
+first model that used four predictors we saw that education was the
+greatest factor, more specifically the percentage of people in a block
+group with at least a bachelor's degree. This variable alone had a **r**
+of 0.7357, meaning it was positively correlated with median house value.
+In other words, as the percentage of people with at least a bachelor's
+degree increases, so does house value. This isn't very surprising given
+the ideas we laid out in the introduction. Higher education in the
+United States often requires a lot of financial resources and typically,
+those with college degree receive greater incomes. Thus, it's not
+surprising that where there are college graduates, there are also higher
+home values.
 
-Our first model, that uses the natural log of the number of people living below the poverty line, the percentage of people with at least a bachelor’s degree, the percentage of vacant house unity, and the percentage of single house units, does yield the best model given our predictors. When investigating the influence our predictors had on median house value, we saw that our f-statistic was associated with a very low p-value <0.0000000000000002, meaning that our model held some promise and that at least one of our predictors had significant influence on our dependent value. Further investigation using stepwise regression informed us that in fact every one of our predictors was useful in predicting median house value. Additionally, we wanted to verify that our four predictors were worth keeping, so we built a model using only two variables: percentage of vacant units and median household value. On both the four and two predictor models, we ran a cross-validation, then we compared the root mean squared error. 
+Our first model, that uses the natural log of the number of people
+living below the poverty line, the percentage of people with at least a
+bachelor's degree, the percentage of vacant house unity, and the
+percentage of single house units, does yield the best model given our
+predictors. When investigating the influence our predictors had on
+median house value, we saw that our f-statistic was associated with a
+very low p-value \<0.0000000000000002, meaning that our model held some
+promise and that at least one of our predictors had significant
+influence on our dependent value. Further investigation using stepwise
+regression informed us that in fact every one of our predictors was
+useful in predicting median house value. Additionally, we wanted to
+verify that our four predictors were worth keeping, so we built a model
+using only two variables: percentage of vacant units and median
+household value. On both the four and two predictor models, we ran a
+cross-validation, then we compared the root mean squared error.
 
-If we were to bring in new variables it might be interesting to look at the effect that greenspace, specifically tree presence, had on median house value. It’s our assumption that greenspace and trees are often found in areas with higher incomes and in areas that have been greatly influenced by historic red lining practices. Similarly, it would be interesting to incorporate historical red lining boundaries to investigate the effects they have on median house value.  
+If we were to bring in new variables it might be interesting to look at
+the effect that greenspace, specifically tree presence, had on median
+house value. It's our assumption that greenspace and trees are often
+found in areas with higher incomes and in areas that have been greatly
+influenced by historic red lining practices. Similarly, it would be
+interesting to incorporate historical red lining boundaries to
+investigate the effects they have on median house value.
 
-While our model is strong, we must acknowledge that our model does not account at all for spatial autocorrelation. We can see in Maps 3 and 4 that the spatial distribution of our standardized residuals appear to be clustered. What this means for our model is that we are missing a variable to account for the spatial influence on median house value. Therefore, without adding such a variable our model will never be as accurate as one that does account for this.
+While our model is strong, we must acknowledge that our model does not
+account at all for spatial autocorrelation. We can see in Maps 3 and 4
+that the spatial distribution of our standardized residuals appear to be
+clustered. What this means for our model is that we are missing a
+variable to account for the spatial influence on median house value.
+Therefore, without adding such a variable our model will never be as
+accurate as one that does account for this.
 
-Additionally, we must note that our poverty variable, the number of people living below the poverty line, is a raw number. Some might say that that poses its own limitation on our model. We are not so sure. It is a fair criticism to say that the raw number does not supply context for how many people live in the block group. And as a result, we lack the information to correctly picture the effect that **density** of poverty in a block group has on median house value. Nevertheless, we think that due to the nature of what our poverty variable represents –I.e., the conditions of real human life – we think it helpful to make an economic case for addressing poverty. In other words, if we can show, as we did, that the greater number of persons in poverty (no matter the density), negatively affects median house value, then that might supply an economic, rather than a moral, argument for addressing poverty. The important link here is that, as we addressed in the introduction, many local governments rely on property taxes to fund their budgets. The higher the value of the home, the higher the house prices and possibly the greater the local government budget is. While we strive to incorporate the most stringent statistically analysis, we must acknowledge that statistics as a field is as much an art as it is a science.  
+Additionally, we must note that our poverty variable, the number of
+people living below the poverty line, is a raw number. Some might say
+that that poses its own limitation on our model. We are not so sure. It
+is a fair criticism to say that the raw number does not supply context
+for how many people live in the block group. And as a result, we lack
+the information to correctly picture the effect that **density** of
+poverty in a block group has on median house value. Nevertheless, we
+think that due to the nature of what our poverty variable represents
+--I.e., the conditions of real human life -- we think it helpful to make
+an economic case for addressing poverty. In other words, if we can show,
+as we did, that the greater number of persons in poverty (no matter the
+density), negatively affects median house value, then that might supply
+an economic, rather than a moral, argument for addressing poverty. The
+important link here is that, as we addressed in the introduction, many
+local governments rely on property taxes to fund their budgets. The
+higher the value of the home, the higher the house prices and possibly
+the greater the local government budget is. While we strive to
+incorporate the most stringent statistically analysis, we must
+acknowledge that statistics as a field is as much an art as it is a
+science.
