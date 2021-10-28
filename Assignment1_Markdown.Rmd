@@ -106,19 +106,41 @@ Variance is the other parameter that needs to be estimated in multiple regressio
 
 ##### **d. Additional Analysis**
 
-One of the methods uses is the Stepwise regression is the step-by-step iterative creation of a regression version that includes the choice of impartial variables for use in a very last version. It includes including or getting rid of capability explanatory variables in succession and checking out for statistical importance after every iteration. The foremost drawbacks of stepwise more than one regression consist of bias in parameter estimation, inconsistencies amongst version choice algorithms, an inherent (however regularly overlooked) trouble of more than one speculation testing, and an irrelevant consciousness or reliance on a unmarried high-quality version.  One of the other limitations of stepwise regression model is that has now no longer been emphasised is that stepwise estimates aren't invariant to inconsequential linear transformations.  
+One of the methods is used is Stepwise regression methods, a simple data mining method which selects predictors based on some criteria
+–P-values below a certain threshold (e.g., only include variables where p-values < 0.1).Smallest (i.e., best) value of the Akaike Information Criterion (AIC), a measure of relative quality of 
+statistical models.
+•Stepwise regression model has various limitations:
+–The final model is not guaranteed to be optimal in any specified sense.
+–The procedure yields a single final model, although there are often several equally good models.
+–Stepwise regression does not take into account a researcher's knowledge about the predictors. It 
+may be necessary to force the procedure to include important predictors.
+–Although the order in which variables are removed or added can provide valuable information 
+about the quality of the predictors, we should be careful to not over-interpret this order.
+–One should not jump to the conclusion that all the important predictor variables for 
+predicting y have been identified, or that all the unimportant predictor variables have been 
+eliminated. It is, of course, possible that we may have committed a Type I or Type II error.
+–Many t-tests for testing βk = 0 are conducted in a stepwise regression procedure. The probability is 
+therefore high that we included some unimportant predictors or excluded some important 
+predictors.
+Sources:
+•https://onlinecourses.science.psu.edu/stat501/node/88 
+•http://andrewgelman.com/2014/06/02/hate-stepwise-regression/ 
+
 $$ 
 {b}_{j.std} = {b}_{j}({Sx}_{j}/{Sy}) 
 $$
 
 Where Sy and Sxj are the standard deviations for the dependent variable and the corresponding jth independent variable
 
-Cross-validation is a re sampling technique used to evaluate machine learning models on a limited data sample. The technique has a single parameter known as k that refers back to the wide variety of agencies that a given statistics pattern is to be split into. As such, the technique is frequently known as k-fold cross-validation. When a particular value for k is chosen, it is able to be utilized in location of k within side the connection with the version, which include k=5 turning into 5-fold cross-validation. Cross-validation is usually utilised in applied machine learning to estimate the ability of a system getting to know version on unseen statistics. That is, to apply a confined pattern for you to estimate how the version is predicted to carry out in popular whilst used to make predictions on statistics now no longer used for the duration of the education of the version. The method is commonly used as it is straightforward to recognise and as it outcomes are much less biased or much less positive estimate of the version ability than different methods. 
+K-fold cross validation is another method used in this process. Involves randomly dividing the set of observations into k groups or folds, of (approximately) equal size. The 1st fold is treated as a validation data set and the model is fitted on the remaining k - 1 folds (training data set).The Mean Square Error (MSE) is computed for the validation fold. This procedure is repeated k times; each time, a different fold is treated as the validation data set. This process results in k estimates of the MSE. The k-fold MSE estimate is computed by averaging the MSE's across the k folds. The k-fold RMSE is computed as the square root of that MSE. In practice, k is usually set to 5 or 10. Leave One Out cross validation (LOOCV) is a special case of k-fold Cross Validation when k = n. 
+The biggest draw back of k-fold cross validation is the scope of over fitting the model. Even though a complicated/non linear model may do well with modeling the training data, the same model will likely be abysmal at modeling unseen validation data.
 
 $$ 
 CV(λ)= 1/k\sum_{k=1}^{k} E_{k}(λ)
 $$
-Root Mean Square Error (RMSE) is a standard deviation of the residuals (prediction errors). Residuals are a measure to know how far from the regression line data points are; RMSE is a measure to unfold out those residuals are. In different words, it tells the concentration of the data around the line and its best fit. RMSE is a usually used for climatology, forecasting, and regression analysis to verify experimental results. 
+Root Mean Square Root(RMSE)is an estimate of the magnitude of a typical residual which is obtained by diving the Residual Sum of Squares by the number of observations giving us a Mean Square Error(MSE). Which is then square rooted to get a RMSE.
+There are a few limitations with RMSE, one being the number of observations become the training and validation data sets. The other limitation would be that only a part of the data set would be used for model fitting and parameter estimation, would be specially be problematic whent eh sample deta is already small by itself.
+
 
 ### **Results**
 
@@ -704,9 +726,6 @@ choro_stdresclass
 
 ##### **d. Additional Models**
 
-All the three predictors are kept that means the original models built for preceptors is best models since it has the lowest AIC.
-The RMSE for the 4 predictor is 0.366 and the RMSE for the 2 predictor (Percent vacant and Median Household Income) is 0.443. Since the 4 predictor RMSE is lower than the 2 predictor RMSE, the original model is the best.
-
 ```{r stepwise, echo=FALSE, warning=FALSE, message=FALSE, results='hide', include =FALSE}
 #use step and step$anova commands in the MASS library to run stepwise
 #regression and determine the best model based on the Akaike Information
@@ -720,7 +739,7 @@ step <- stepAIC(fit, direction="both")
 stepoutput <- step$anova
 
 steptable<- kbl(stepoutput)%>%
-              kable_material%>%footnote(general_title = "Stepwise ANOVA",general= "Table 6")
+              kable_material%>%footnote(general_title = "Stepwise ANOVA",general= "Table 5")
 ```
 
 ```{r step.output.AIC, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
@@ -766,15 +785,15 @@ rmse2 <- sqrt(mse2)
 fit2.summary<- broom::tidy(fit2)%>%
               kable(
               align = c("l", "r", "r", "r", "r"))%>%kable_styling()%>%footnote(general_title = "Regression Summary",
-              general = "Table 7")
+              general = "Table 6")
 
 #displays the summary statistics and R squared
 fit2.stats<- glance(fit2)%>%kable(col.names= c("r.squared", "adj.r.squared", "sigma", "f-statistic", "p.value", "df", "logLik", "AIC", "BIC", "deviance", "df.residual", "nobs"))%>%kable_styling()%>%footnote(general_title = "Regression Summary",
-              general = "Table 8")
+              general = "Table 7")
 
 anova.fit2<- broom::tidy(anova(fit2))%>%kable(digits = c(0, 4, 4, 4, 4),
             align = c("l", "r", "r", "r", "r", "r"))%>%kable_styling()%>%footnote(general_title = "ANOVA",
-             general = "Table 9")
+             general = "Table 8")
 
 
 #### making mse table 
@@ -788,11 +807,8 @@ mse.table%>%as.numeric()
 
 mse.tableK <- mse.table%>%kable(digits=c(5,5))%>%kable_styling( full_width=F)%>%
   footnote(general_title = "Errors For Both Regressions",
-           general = "Table 10")
+           general = "Table 9")
 ```
-
-
-
 
 
 ```{r fold.cv.summary.anova.output, include=TRUE, echo=FALSE, warning=FALSE, message=FALSE}
@@ -809,17 +825,16 @@ mse.tableK
 
 ```
 
-
+All the three predictors are kept that means the original models built for preceptors is best models since it has the lowest AIC.
+The RMSE for the 4 predictor is 0.366 and the RMSE for the 2 predictor (Percent vacant and Median Household Income) is 0.443. Since the 4 predictor RMSE is lower than the 2 predictor RMSE, the original model is the best.
 
 ### **Limitations & Conclusion**
 
-In this study we set out to investigate to what extent median house value is a factor of various neighborhood characteristics, and which characteristics were more powerful than others. As a result, in our first model that used four predictors we saw that education was the greatest factor, more specifically the percentage of people in a block group with at least a bachelor’s degree. This variable alone had a **r** of 0.7357, meaning it was positively correlated with median house value. In other words, as the percentage of people with at least a bachelor’s degree increases, so does house value.  This isn’t very surprising given the ideas we laid out in the introduction. Higher education in the United States often requires a lot of financial resources and typically, those with a college degree receive greater incomes. Thus, it’s not surprising that where there are college graduates, there are also higher home values.   
+In this study we set out to investigate to what extent median house value is a factor of various neighborhood characteristics, and which characteristics were more powerful than others. As a result, in our first model that used four predictors we saw that education was the greatest factor, more specifically the percentage of people in a block group with at least a bachelor’s degree. This variable alone had a **r** of 0.7357, meaning it was positively correlated with median house value. In other words, as the percentage of people with at least a bachelor’s degree increases, so does house value.  This isn’t very surprising given the ideas we laid out in the introduction. Higher education in the United States often requires a lot of financial resources and typically, those with college degree receive greater incomes. Thus, it’s not surprising that where there are college graduates, there are also higher home values.   
 
-Our first model, that uses the natural log of the number of people living below the poverty line, the percentage of people with at least a bachelor’s degree, the percentage of vacant house units, and the percentage of single house units, does yield the best model given our predictors. When investigating the influence our predictors had on median house value, we saw that our f-statistic was associated with a very low p-value <0.0000000000000002, meaning that our model held some promise and that at least one of our predictors had significant influence on our dependent value. Further investigation using stepwise regression informed us that in fact every one of our predictors was useful in predicting median house value. Additionally, we wanted to verify that our four predictors were worth keeping, so we built a model using only two variables: percentage of vacant units and median household value. On both the four and two predictor models, we ran a cross-validation, then we compared the root mean squared error. 
+Our first model, that uses the natural log of the number of people living below the poverty line, the percentage of people with at least a bachelor’s degree, the percentage of vacant house unity, and the percentage of single house units, does yield the best model given our predictors. When investigating the influence our predictors had on median house value, we saw that our f-statistic was associated with a very low p-value <0.0000000000000002, meaning that our model held some promise and that at least one of our predictors had significant influence on our dependent value. Further investigation using stepwise regression informed us that in fact every one of our predictors was useful in predicting median house value. Additionally, we wanted to verify that our four predictors were worth keeping, so we built a model using only two variables: percentage of vacant units and median household value. On both the four and two predictor models, we ran a cross-validation, then we compared the root mean squared error. 
 
-We are always trying to get less variation since it will imply more accuracy and precision. In the results we observed that individuals with a Bachelor's degree or higher level of education, vacant houses, single house units and households living below poverty line are the factors effecting median house value. Among those 4 factors, individuals with Bachelor's degree or higher level and single household are projecting more variation on median household value. When we examine the results from the Table 2 we get the following relationships between each of the variables. The relationship between Median household value is in the opposite direction which indicates that if median household value increases, there is a decrease in the below poverty line value. If Median household Value increases then the percent of bachelors and higher would also increase with a correlation value of 0.7357. Similarly, we can identify the relationship between each of the variables with another variable. Using the regression equation, substituting the corresponding values to the input variables we are able to interpret the value of the house hold median value. Based on the results adjects R^2^ = 0.6615 which indicates that 66.15% of the variation of the output variables are explained by the chosen input variables. Higher R^2^ value indicates a good git for the model. AIC – Akaike Information Criteria, for the given set of data the model is the one which has minimum AIC. 
-
-If we were to bring in new variables it might be interesting to look at the effect that green space, specifically tree presence, had on median house value. It’s our assumption that green space and trees are often found in areas with higher incomes and in areas that have been greatly influenced by historic red lining practices. Similarly, it would be interesting to incorporate historical red lining boundaries to investigate the effects they have on median house value.  
+If we were to bring in new variables it might be interesting to look at the effect that greenspace, specifically tree presence, had on median house value. It’s our assumption that greenspace and trees are often found in areas with higher incomes and in areas that have been greatly influenced by historic red lining practices. Similarly, it would be interesting to incorporate historical red lining boundaries to investigate the effects they have on median house value.  
 
 While our model is strong, we must acknowledge that our model does not account at all for spatial autocorrelation. We can see in Maps 3 and 4 that the spatial distribution of our standardized residuals appear to be clustered. What this means for our model is that we are missing a variable to account for the spatial influence on median house value. Therefore, without adding such a variable our model will never be as accurate as one that does account for this.
 
