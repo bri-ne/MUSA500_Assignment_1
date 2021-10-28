@@ -704,6 +704,9 @@ choro_stdresclass
 
 ##### **d. Additional Models**
 
+All the three predictors are kept that means the original models built for preceptors is best models since it has the lowest AIC.
+The RMSE for the 4 predictor is 0.366 and the RMSE for the 2 predictor (Percent vacant and Median Household Income) is 0.443. Since the 4 predictor RMSE is lower than the 2 predictor RMSE, the original model is the best.
+
 ```{r stepwise, echo=FALSE, warning=FALSE, message=FALSE, results='hide', include =FALSE}
 #use step and step$anova commands in the MASS library to run stepwise
 #regression and determine the best model based on the Akaike Information
@@ -806,8 +809,7 @@ mse.tableK
 
 ```
 
-All the three predictors are kept that means the original models built for preceptors is best models since it has the lowest AIC.
-The RMSE for the 4 predictor is 0.366 and the RMSE for the 2 predictor (Percent vacant and Median Household Income) is 0.443. Since the 4 predictor RMSE is lower than the 2 predictor RMSE, the original model is the best.
+
 
 ### **Limitations & Conclusion**
 
